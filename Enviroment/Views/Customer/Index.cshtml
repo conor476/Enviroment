@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Enviroment.Models.Customer> // model used for the view.
+
+@{
+    ViewData["Title"] = "Customer List"; // Sets the view's title.
+}
+
+<h2>Customers</h2>  
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Customer</a> 
+</p>
+
+
+@if (Model != null && Model.Any())
+{
+    // Begins the customer list table.
+    <table class="table">
+        <thead>
+            <tr>
+                
+                <th>ID</th>
+                <th>Ticket Number</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th> 
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop over all employees as there is multiple entries -->
+            @foreach (var customer in Model)
+            {
+                    // Creates a table row for each customer.
+                <tr>
+                    <td>@customer.CustomerID</td> 
+                    <td>@customer.TicketNumber</td> 
+                    <td>@customer.FirstName</td> 
+                    <td>@customer.LastName</td> 
+                    <td>@customer.Email</td> 
+                    <td>
+                        
+                        <a asp-action="Edit" asp-route-id="@customer.CustomerID" class="btn btn-warning">Edit</a>
+                        <a asp-action="Details" asp-route-id="@customer.CustomerID" class="btn btn-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@customer.CustomerID" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+// Message displayed if no customers are found.
+else
+{
+    <p>No customers found.</p>
+}

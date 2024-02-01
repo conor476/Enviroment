@@ -1,0 +1,79 @@
+﻿@model Enviroment.Models.Ticket
+@{
+    ViewData["Title"] = "Create Ticket";
+    <!-- Sets the page title -->
+}
+
+<h2>Create New Ticket</h2> <!-- Page heading -->
+<!-- Form for creating a new ticket -->
+<form asp-action="Create" method="post">
+    <!-- Customer Name input -->
+    <div class="form-group">
+        <label asp-for="CustomerName">Customer Name</label>
+        <input asp-for="CustomerName" class="form-control" />
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+
+    <!-- Employee Name input -->
+    <div class="form-group">
+        <label asp-for="EmployeeName">Employee Name</label>
+        <input asp-for="EmployeeName" class="form-control" />
+        <span asp-validation-for="EmployeeName" class="text-danger"></span>
+    </div>
+
+    <!-- Category dropdown -->
+    <div class="form-group">
+        <label asp-for="Category">Category</label>
+        <select asp-for="Category" id="categoryDropdown" class="form-control" required>
+            <option value="">Select a Category</option>
+            @foreach (var category in ViewBag.Categories as SelectList)
+            {
+                <option value="@category.Value">@category.Text</option>
+            }
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <!-- Description textarea -->
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <!-- Status input -->
+    <div class="form-group">
+        <label asp-for="Status">Status</label>
+        <input asp-for="Status" class="form-control" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <!-- Team input -->
+    <div class="form-group">
+        <label asp-for="Team">Team</label>
+        <input asp-for="Team" class="form-control" />
+        <span asp-validation-for="Team" class="text-danger"></span>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<!-- Link back to the ticket list -->
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<!--  dynamic description update Iteration 2 -->
+@section Scripts {
+    <script>
+        // Handles category selection change and updates the description
+        var categoryDescriptions = @Html.Raw(Json.Serialize(ViewBag.CategoryDescriptions));
+
+        document.getElementById('categoryDropdown').addEventListener('change', function () {
+            var selectedCategory = this.value;
+            var description = categoryDescriptions[selectedCategory];
+            document.getElementById('descriptionTextarea').value = description || '';
+        });
+    </script>
+}

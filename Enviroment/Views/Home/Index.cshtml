@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <!-- Main title and a link to ASP.NET Core documentation -->
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <!-- Button to trigger the password test functionality -->
+    <button id="testPasswordBtn" class="btn btn-success" onclick="togglePasswordInput()">Test Your Password</button>
+
+    <!-- Hidden section for password input, shown when the button is clicked -->
+    <div id="passwordInputDiv" style="display:none;">
+        <input type="password" id="passwordInput" placeholder="Enter your password" class="form-control" oninput="updatePasswordStrength()"/>
+        <p id="passwordLengthMessage" class="text-danger" style="display:none;">The password must be at least 10 characters.</p>
+        <p>Password Strength: <span id="passwordRating">0</span>/5</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Function to toggle the display of the password input section
+        function togglePasswordInput() {
+            var passwordDiv = document.getElementById('passwordInputDiv');
+            passwordDiv.style.display = passwordDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Function to update the password strength rating as the user types
+        function updatePasswordStrength() {
+            let password = document.getElementById('passwordInput').value;
+            let rating = getPasswordRating(password);
+            document.getElementById('passwordRating').textContent = rating;
+
+            // Update the visibility of the password length warning message
+            let message = document.getElementById('passwordLengthMessage');
+            message.style.display = password.length >= 10 ? 'none' : 'block';
+        }
+
+        // Function to calculate the password rating based on various criteria
+        function getPasswordRating(password) {
+            let rating = 0;
+            if (password.length > 10) rating++;
+            if (/[0-9]/.test(password) && /[a-zA-Z]/.test(password)) rating++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) rating++;
+            if (/[\!\#\$\%\^\&\*\(\)\-\_\=\+\[\]\{\}\;\:\'\"\,\<\.\>\/\?\|\\`~]/.test(password)) rating++;
+            if (!isSequentialNumbers(password)) rating++;
+            return rating;
+        }
+
+        // Helper function to check if the password contains sequential numbers
+        function isSequentialNumbers(password) {
+            let numbers = password.match(/[0-9]+/g);
+            if (!numbers) return false;
+            for (let num of numbers) {
+                if (isSequential(num)) return true;
+            }
+            return false;
+        }
+
+        // Helper function to determine if a string of numbers is sequential
+        function isSequential(num) {
+            for (let i = 1; i < num.length; i++) {
+                if (num.charCodeAt(i) === num.charCodeAt(i - 1) + 1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    </script>
+}

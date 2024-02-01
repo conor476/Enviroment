@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Enviroment.Models.Category>
+@{
+    ViewData["Title"] = "Category List";
+}
+<h2>Categories</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Category</a>
+</p>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop over all categories as there is multiple entries -->
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.Category_id</td>
+                    <td>@category.Case_Name</td>
+                    <td>@category.Description</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@category.Category_id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@category.Category_id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No categories found.</p>
+}

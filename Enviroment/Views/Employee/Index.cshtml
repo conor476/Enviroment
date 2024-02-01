@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Enviroment.Models.Employee> // Connects to Employee model
+@{
+    ViewData["Title"] = "Home Page"; // Page title set to 'Home Page'
+}
+<h2>Employees</h2> 
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Employee</a> 
+</p>
+
+
+@if (Model != null && Model.Any())
+{
+    // Begin employee table
+    <table class="table">
+        <thead>
+            <tr>
+            
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Password</th> <!-- Note: May change password function later -->
+                <th>Actions</th> 
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop over all employees as there is multiple entries -->
+            @foreach (var employee in Model)
+            {
+                // Create a row for each employee
+                <tr>
+                    <td>@employee.EmployeeID</td> 
+                    <td>@employee.FirstName</td> 
+                    <td>@employee.LastName</td> 
+                    <td>@employee.Email</td> 
+                    <td>@employee.Password</td> <!-- See above note regarding password -->
+                    <td>
+                        
+                        <a asp-action="Edit" asp-route-id="@employee.EmployeeID" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@employee.EmployeeID" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+// Show message if no employees exist
+else
+{
+    <p>No employees available.</p>
+}
