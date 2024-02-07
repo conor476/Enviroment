@@ -1,12 +1,11 @@
-﻿using Enviroment.Data;
+﻿
+
+using Enviroment.Data;
 using Enviroment.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
+
 
 namespace Enviroment.Controllers;
 public class TicketController : Controller
@@ -28,6 +27,7 @@ public class TicketController : Controller
             ticketsQuery = ticketsQuery.Where(t => t.TicketID.ToString().Contains(searchString)
                                                    || t.CustomerName.Contains(searchString)
                                                    // Include other fields if necessary for the search.
+                                                   // Consider including Summary and Type in the search criteria if needed
                                                    );
         }
 
@@ -104,7 +104,7 @@ public class TicketController : Controller
     // Processes ticket editing with new note functionality.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,Description,Category,Status,Team,NewNote")] Ticket ticket)
+    public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
     {
         if (id != ticket.TicketID)
         {
@@ -139,6 +139,7 @@ public class TicketController : Controller
         }
         return View(ticket);
     }
+
 
     // Shows confirmation for deleting a ticket.
     public async Task<IActionResult> Delete(int? id)

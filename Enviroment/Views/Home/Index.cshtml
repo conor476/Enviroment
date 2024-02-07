@@ -3,52 +3,71 @@
 }
 
 <div class="text-center">
-    <!-- Main title and a link to ASP.NET Core documentation -->
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
-    <!-- Button to trigger the password test functionality -->
     <button id="testPasswordBtn" class="btn btn-success" onclick="togglePasswordInput()">Test Your Password</button>
 
-    <!-- Hidden section for password input, shown when the button is clicked -->
     <div id="passwordInputDiv" style="display:none;">
-        <input type="password" id="passwordInput" placeholder="Enter your password" class="form-control" oninput="updatePasswordStrength()"/>
-        <p id="passwordLengthMessage" class="text-danger" style="display:none;">The password must be at least 10 characters.</p>
+        <input type="password" id="passwordInput" placeholder="Enter your password" class="form-control" oninput="updatePasswordStrength()" />
         <p>Password Strength: <span id="passwordRating">0</span>/5</p>
+        <p id="passwordLengthMessage" class="text-danger" style="display:none;">The password must be at least 10 characters.</p>
+        <p id="passwordCapitalMessage" class="text-danger" style="display:none;">The password must contain at least 1 capital letter.</p>
+        <p id="passwordNumberMessage" class="text-danger" style="display:none;">The password must contain a number.</p>
+        <p id="passwordSpecialCharacterMessage" class="text-danger" style="display:none;">The password must contain a special character.</p>
+        <p id="passwordSequentialMessage" class="text-danger" style="display:none;">Numbers in the password cannot be sequential.</p>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        // Function to toggle the display of the password input section
         function togglePasswordInput() {
             var passwordDiv = document.getElementById('passwordInputDiv');
             passwordDiv.style.display = passwordDiv.style.display === 'none' ? 'block' : 'none';
         }
 
-        // Function to update the password strength rating as the user types
         function updatePasswordStrength() {
             let password = document.getElementById('passwordInput').value;
-            let rating = getPasswordRating(password);
-            document.getElementById('passwordRating').textContent = rating;
-
-            // Update the visibility of the password length warning message
-            let message = document.getElementById('passwordLengthMessage');
-            message.style.display = password.length >= 10 ? 'none' : 'block';
-        }
-
-        // Function to calculate the password rating based on various criteria
-        function getPasswordRating(password) {
             let rating = 0;
-            if (password.length > 10) rating++;
-            if (/[0-9]/.test(password) && /[a-zA-Z]/.test(password)) rating++;
-            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) rating++;
-            if (/[\!\#\$\%\^\&\*\(\)\-\_\=\+\[\]\{\}\;\:\'\"\,\<\.\>\/\?\|\\`~]/.test(password)) rating++;
-            if (!isSequentialNumbers(password)) rating++;
-            return rating;
+
+            if (password.length >= 10) {
+                rating++;
+                document.getElementById('passwordLengthMessage').style.display = 'none';
+            } else {
+                document.getElementById('passwordLengthMessage').style.display = 'block';
+            }
+
+            if (/[0-9]/.test(password) && /[a-zA-Z]/.test(password)) {
+                rating++;
+                document.getElementById('passwordNumberMessage').style.display = 'none';
+            } else {
+                document.getElementById('passwordNumberMessage').style.display = 'block';
+            }
+
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
+                rating++;
+                document.getElementById('passwordCapitalMessage').style.display = 'none';
+            } else {
+                document.getElementById('passwordCapitalMessage').style.display = 'block';
+            }
+
+            if (/[\!\#\$\%\^\&\*\(\)\-\_\=\+\[\]\{\}\;\:\'\"\,\<\.\>\/\?\|\\`~]/.test(password)) {
+                rating++;
+                document.getElementById('passwordSpecialCharacterMessage').style.display = 'none';
+            } else {
+                document.getElementById('passwordSpecialCharacterMessage').style.display = 'block';
+            }
+
+            if (!isSequentialNumbers(password)) {
+                rating++;
+                document.getElementById('passwordSequentialMessage').style.display = 'none';
+            } else {
+                document.getElementById('passwordSequentialMessage').style.display = 'block';
+            }
+
+            document.getElementById('passwordRating').textContent = rating;
         }
 
-        // Helper function to check if the password contains sequential numbers
         function isSequentialNumbers(password) {
             let numbers = password.match(/[0-9]+/g);
             if (!numbers) return false;
@@ -58,7 +77,6 @@
             return false;
         }
 
-        // Helper function to determine if a string of numbers is sequential
         function isSequential(num) {
             for (let i = 1; i < num.length; i++) {
                 if (num.charCodeAt(i) === num.charCodeAt(i - 1) + 1) {

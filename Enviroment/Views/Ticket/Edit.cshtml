@@ -33,25 +33,58 @@
         <input asp-for="Category" class="form-control" />
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
+    <!-- Summary input -->
+    <div class="form-group">
+        <label asp-for="Summary">Summary</label>
+        <input asp-for="Summary" class="form-control" />
+        <span asp-validation-for="Summary" class="text-danger"></span>
+    </div>
+    <!-- Type dropdown -->
+    <div class="form-group">
+        <label asp-for="Type">Type</label>
+        <select asp-for="Type" class="form-control" required>
+            <option value="">Select a Type</option>
+            <option value="Service Request">Service Request</option>
+            <option value="Incident">Incident</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
 
+    <!-- Status dropdown -->
     <div class="form-group">
         <label asp-for="Status">Status</label>
-        <input asp-for="Status" class="form-control" />
+        <select asp-for="Status" class="form-control" required>
+            <option value="">Select a Status</option>
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+            <option value="Suspended">Suspended</option>
+        </select>
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
+    <!-- Team dropdown -->
     <div class="form-group">
         <label asp-for="Team">Team</label>
-        <input asp-for="Team" class="form-control" />
+        <select asp-for="Team" class="form-control" required>
+            <option value="">Select a Team</option>
+            <option value="Front desk">Front desk</option>
+            <option value="Client Services">Client Services</option>
+            <option value="Account Services">Account Services</option>
+            <option value="IT Security">IT Security</option>
+            <option value="Networking">Networking</option>
+            <option value="Triage">Triage</option>
+        </select>
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
+
+
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>
 
 <script>
-function showNoteArea() {
-    document.getElementById("noteArea").style.display = "block";
-}
+    function showNoteArea() {
+        document.getElementById("noteArea").style.display = "block";
+    }
 </script>

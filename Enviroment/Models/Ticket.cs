@@ -9,8 +9,9 @@
         public string Category { get; set; }
         public string Status { get; set; }
         public string Team { get; set; }
+        public string Summary { get; set; }
+        public string Type { get; set; }
 
-        
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public string? NewNote { get; set; }
 

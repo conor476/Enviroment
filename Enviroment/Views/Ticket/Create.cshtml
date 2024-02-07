@@ -1,11 +1,10 @@
 ﻿@model Enviroment.Models.Ticket
 @{
     ViewData["Title"] = "Create Ticket";
-    <!-- Sets the page title -->
 }
 
-<h2>Create New Ticket</h2> <!-- Page heading -->
-<!-- Form for creating a new ticket -->
+<h2>Create New Ticket</h2>
+
 <form asp-action="Create" method="post">
     <!-- Customer Name input -->
     <div class="form-group">
@@ -41,17 +40,48 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
-    <!-- Status input -->
+    <!-- Summary input -->
+    <div class="form-group">
+        <label asp-for="Summary">Summary</label>
+        <input asp-for="Summary" class="form-control" />
+        <span asp-validation-for="Summary" class="text-danger"></span>
+    </div>
+
+    <!-- Type dropdown -->
+    <div class="form-group">
+        <label asp-for="Type">Type</label>
+        <select asp-for="Type" class="form-control" required>
+            <option value="">Select a Type</option>
+            <option value="Service Request">Service Request</option>
+            <option value="Incident">Incident</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <!-- Status dropdown -->
     <div class="form-group">
         <label asp-for="Status">Status</label>
-        <input asp-for="Status" class="form-control" />
+        <select asp-for="Status" class="form-control" required>
+            <option value="">Select a Status</option>
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+            <option value="Suspended">Suspended</option>
+        </select>
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
-    <!-- Team input -->
+    <!-- Team dropdown -->
     <div class="form-group">
         <label asp-for="Team">Team</label>
-        <input asp-for="Team" class="form-control" />
+        <select asp-for="Team" class="form-control" required>
+            <option value="">Select a Team</option>
+            <option value="Front desk">Front desk</option>
+            <option value="Client Services">Client Services</option>
+            <option value="Account Services">Account Services</option>
+            <option value="IT Security">IT Security</option>
+            <option value="Networking">Networking</option>
+            <option value="Triage">Triage</option>
+        </select>
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
 
@@ -64,7 +94,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<!--  dynamic description update Iteration 2 -->
 @section Scripts {
     <script>
         // Handles category selection change and updates the description
