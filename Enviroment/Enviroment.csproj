@@ -16,13 +16,17 @@
   <ItemGroup>
     <Compile Remove="Models\Status.cs" />
     <Compile Remove="Models\Teams.cs" />
+    <Compile Remove="Views\Ticket\CreateU.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="obj\Debug\net7.0\.NETCoreApp,Version=v7.0.AssemblyAttributes.cs" />
-    <Compile Include="obj\Debug\net7.0\Enviroment.AssemblyInfo.cs" />
-    <Compile Include="obj\Debug\net7.0\Enviroment.GlobalUsings.g.cs" />
-    <Compile Include="obj\Debug\net7.0\Enviroment.RazorAssemblyInfo.cs" />
+    <Content Remove="Views\Ticket\CreateU.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="obj\Debug\net8.0\Enviroment.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net8.0\Enviroment.MvcApplicationPartsAssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net8.0\Enviroment.RazorAssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,14 +35,14 @@
     <Content Include="bin\Debug\net7.0\Enviroment.deps.json" />
     <Content Include="bin\Debug\net7.0\Enviroment.runtimeconfig.json" />
     <Content Include="bin\Debug\net7.0\Enviroment.staticwebassets.runtime.json" />
-    <Content Include="obj\Debug\net7.0\Enviroment.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\Debug\net7.0\project.razor.vs.json" />
-    <Content Include="obj\Debug\net7.0\scopedcss\bundle\Enviroment.styles.css" />
-    <Content Include="obj\Debug\net7.0\scopedcss\projectbundle\Enviroment.bundle.scp.css" />
-    <Content Include="obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css" />
-    <Content Include="obj\Debug\net7.0\staticwebassets.build.json" />
-    <Content Include="obj\Debug\net7.0\staticwebassets.development.json" />
-    <Content Include="obj\Debug\net7.0\staticwebassets.pack.json" />
+    <Content Include="obj\Debug\net8.0\Enviroment.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\net8.0\Enviroment.sourcelink.json" />
+    <Content Include="obj\Debug\net8.0\scopedcss\bundle\Enviroment.styles.css" />
+    <Content Include="obj\Debug\net8.0\scopedcss\projectbundle\Enviroment.bundle.scp.css" />
+    <Content Include="obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css" />
+    <Content Include="obj\Debug\net8.0\staticwebassets.build.json" />
+    <Content Include="obj\Debug\net8.0\staticwebassets.development.json" />
+    <Content Include="obj\Debug\net8.0\staticwebassets.pack.json" />
     <Content Include="obj\Enviroment.csproj.nuget.dgspec.json" />
     <Content Include="obj\project.assets.json" />
   </ItemGroup>
@@ -297,25 +301,26 @@
     <None Include="bin\Debug\net7.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll" />
     <None Include="bin\Debug\net7.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll" />
     <None Include="bin\Debug\net7.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
-    <None Include="obj\Debug\net7.0\apphost.exe" />
-    <None Include="obj\Debug\net7.0\Enviroment.AssemblyInfoInputs.cache" />
-    <None Include="obj\Debug\net7.0\Enviroment.assets.cache" />
-    <None Include="obj\Debug\net7.0\Enviroment.csproj.AssemblyReference.cache" />
-    <None Include="obj\Debug\net7.0\Enviroment.csproj.BuildWithSkipAnalyzers" />
-    <None Include="obj\Debug\net7.0\Enviroment.csproj.CopyComplete" />
-    <None Include="obj\Debug\net7.0\Enviroment.csproj.CoreCompileInputs.cache" />
-    <None Include="obj\Debug\net7.0\Enviroment.dll" />
-    <None Include="obj\Debug\net7.0\Enviroment.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="obj\Debug\net7.0\Enviroment.genruntimeconfig.cache" />
-    <None Include="obj\Debug\net7.0\Enviroment.MvcApplicationPartsAssemblyInfo.cache" />
-    <None Include="obj\Debug\net7.0\Enviroment.pdb" />
-    <None Include="obj\Debug\net7.0\Enviroment.RazorAssemblyInfo.cache" />
-    <None Include="obj\Debug\net7.0\refint\Enviroment.dll" />
-    <None Include="obj\Debug\net7.0\ref\Enviroment.dll" />
-    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.build.Enviroment.props" />
-    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Enviroment.props" />
-    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Enviroment.props" />
-    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.Enviroment.Microsoft.AspNetCore.StaticWebAssets.props" />
+    <None Include="obj\Debug\net8.0\apphost.exe" />
+    <None Include="obj\Debug\net8.0\Enviroment.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net8.0\Enviroment.assets.cache" />
+    <None Include="obj\Debug\net8.0\Enviroment.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\net8.0\Enviroment.csproj.BuildWithSkipAnalyzers" />
+    <None Include="obj\Debug\net8.0\Enviroment.csproj.CopyComplete" />
+    <None Include="obj\Debug\net8.0\Enviroment.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net8.0\Enviroment.dll" />
+    <None Include="obj\Debug\net8.0\Enviroment.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\Debug\net8.0\Enviroment.genruntimeconfig.cache" />
+    <None Include="obj\Debug\net8.0\Enviroment.MvcApplicationPartsAssemblyInfo.cache" />
+    <None Include="obj\Debug\net8.0\Enviroment.pdb" />
+    <None Include="obj\Debug\net8.0\Enviroment.RazorAssemblyInfo.cache" />
+    <None Include="obj\Debug\net8.0\project.razor.vs.bin" />
+    <None Include="obj\Debug\net8.0\refint\Enviroment.dll" />
+    <None Include="obj\Debug\net8.0\ref\Enviroment.dll" />
+    <None Include="obj\Debug\net8.0\staticwebassets\msbuild.build.Enviroment.props" />
+    <None Include="obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Enviroment.props" />
+    <None Include="obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Enviroment.props" />
+    <None Include="obj\Debug\net8.0\staticwebassets\msbuild.Enviroment.Microsoft.AspNetCore.StaticWebAssets.props" />
     <None Include="obj\Enviroment.csproj.nuget.g.props" />
     <None Include="obj\Enviroment.csproj.nuget.g.targets" />
     <None Include="obj\project.nuget.cache" />

@@ -82,8 +82,8 @@ async Task SeedUsersAndRoles(IServiceProvider serviceProvider)
     }
 
     // Seed users and assign roles for you to have one admin and one user account pregenerated
-    await SeedUserAsync(userManager, "Admin@honestauto.com", "Admin123456!", "Admin");
-    await SeedUserAsync(userManager, "User123@gmail.com", "User123465789!", "User");
+    await SeedUserAsync(userManager, "Admin@helpdesk.com", "Password1!", "Admin");
+    await SeedUserAsync(userManager, "User@gmail.com", "Password1!", "User");
 }
 async Task SeedUserAsync(UserManager<User> userManager, string email, string password, string role)
 {

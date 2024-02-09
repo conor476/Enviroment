@@ -13,12 +13,16 @@
         <span asp-validation-for="CustomerName" class="text-danger"></span>
     </div>
 
-    <!-- Employee Name input -->
-    <div class="form-group">
-        <label asp-for="EmployeeName">Employee Name</label>
-        <input asp-for="EmployeeName" class="form-control" />
-        <span asp-validation-for="EmployeeName" class="text-danger"></span>
-    </div>
+    <!-- Employee Name input (shown only for users in the 'employee' role) -->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group">
+            <label asp-for="EmployeeName">Employee Name</label>
+            <input asp-for="EmployeeName" class="form-control" />
+            <span asp-validation-for="EmployeeName" class="text-danger"></span>
+        </div>
+    }
+
 
     <!-- Category dropdown -->
     <div class="form-group">
@@ -72,6 +76,7 @@
 
     <!-- Team dropdown -->
     <div class="form-group">
+        {
         <label asp-for="Team">Team</label>
         <select asp-for="Team" class="form-control" required>
             <option value="">Select a Team</option>
@@ -84,7 +89,7 @@
         </select>
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
-
+    }
     <!-- Submit button -->
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
