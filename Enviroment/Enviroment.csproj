@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="obj\Debug\net8.0\Enviroment.AssemblyInfo.cs" />
     <Compile Include="obj\Debug\net8.0\Enviroment.MvcApplicationPartsAssemblyInfo.cs" />
     <Compile Include="obj\Debug\net8.0\Enviroment.RazorAssemblyInfo.cs" />
   </ItemGroup>

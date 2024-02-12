@@ -8,26 +8,22 @@
 <form asp-action="Create" method="post">
     @if (User.IsInRole("Admin"))
     {
-        <!-- For Admin: Input for entering user's Email Address -->
+        <!-- Admin-Specific Fields -->
+        <!-- User Email Address Input -->
         <div class="form-group">
             <label asp-for="EmailAddress">User Email Address</label>
             <input asp-for="EmailAddress" class="form-control" />
             <span asp-validation-for="EmailAddress" class="text-danger"></span>
         </div>
-
-        <div class="form-group">
-            <label asp-for="EmployeeName">Employee Name</label>
-            <input asp-for="EmployeeName" class="form-control" />
-            <span asp-validation-for="EmployeeName" class="text-danger"></span>
-        </div>
     }
     else
     {
-        <!-- For Regular User: Hidden Email Address field -->
+        <!-- Regular User: Hidden Email Address Field -->
         <input type="hidden" asp-for="EmailAddress" value="@User.Identity.Name" />
     }
 
-    <!-- Category dropdown -->
+    <!-- Shared Fields -->
+    <!-- Category Dropdown -->
     <div class="form-group">
         <label asp-for="Category">Category</label>
         <select asp-for="Category" id="categoryDropdown" class="form-control" required>
@@ -40,21 +36,21 @@
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
 
-    <!-- Summary input -->
+    <!-- Summary Input -->
     <div class="form-group">
         <label asp-for="Summary">Summary</label>
         <input asp-for="Summary" class="form-control" />
         <span asp-validation-for="Summary" class="text-danger"></span>
     </div>
 
-    <!-- Description textarea -->
+    <!-- Description Textarea -->
     <div class="form-group">
         <label asp-for="Description">Description</label>
         <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
-    <!-- Type dropdown -->
+    <!-- Type Dropdown -->
     <div class="form-group">
         <label asp-for="Type">Type</label>
         <select asp-for="Type" class="form-control" required>
@@ -65,7 +61,7 @@
         <span asp-validation-for="Type" class="text-danger"></span>
     </div>
 
-    <!-- Status dropdown -->
+    <!-- Status Dropdown -->
     <div class="form-group">
         <label asp-for="Status">Status</label>
         <select asp-for="Status" class="form-control" required>
@@ -77,12 +73,12 @@
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
-    <!-- Team dropdown -->
+    <!-- Team Dropdown -->
     <div class="form-group">
         <label asp-for="Team">Team</label>
         <select asp-for="Team" class="form-control" required>
             <option value="">Select a Team</option>
-            <option value="Front desk">Front desk</option>
+            <option value="Front Desk">Front Desk</option>
             <option value="Client Services">Client Services</option>
             <option value="Account Services">Account Services</option>
             <option value="IT Security">IT Security</option>
@@ -92,7 +88,7 @@
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
 
-    <!-- Submit button -->
+    <!-- Submit Button -->
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
@@ -102,7 +98,7 @@
 
 @section Scripts {
     <script>
-        // Handles category selection change and updates the description
+        // Script to handle category selection change
         var categoryDescriptions = @Html.Raw(Json.Serialize(ViewBag.CategoryDescriptions));
 
         document.getElementById('categoryDropdown').addEventListener('change', function () {
