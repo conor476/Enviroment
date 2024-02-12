@@ -6,23 +6,26 @@
 <h2>Create New Ticket</h2>
 
 <form asp-action="Create" method="post">
-    <!-- Customer Name input -->
-    <div class="form-group">
-        <label asp-for="CustomerName">Customer Name</label>
-        <input asp-for="CustomerName" class="form-control" />
-        <span asp-validation-for="CustomerName" class="text-danger"></span>
-    </div>
-
-    <!-- Employee Name input (shown only for users in the 'employee' role) -->
     @if (User.IsInRole("Admin"))
     {
+        <!-- For Admin: Input for entering user's Email Address -->
+        <div class="form-group">
+            <label asp-for="EmailAddress">User Email Address</label>
+            <input asp-for="EmailAddress" class="form-control" />
+            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+        </div>
+
         <div class="form-group">
             <label asp-for="EmployeeName">Employee Name</label>
             <input asp-for="EmployeeName" class="form-control" />
             <span asp-validation-for="EmployeeName" class="text-danger"></span>
         </div>
     }
-
+    else
+    {
+        <!-- For Regular User: Hidden Email Address field -->
+        <input type="hidden" asp-for="EmailAddress" value="@User.Identity.Name" />
+    }
 
     <!-- Category dropdown -->
     <div class="form-group">
@@ -37,18 +40,18 @@
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
 
-    <!-- Description textarea -->
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
     <!-- Summary input -->
     <div class="form-group">
         <label asp-for="Summary">Summary</label>
         <input asp-for="Summary" class="form-control" />
         <span asp-validation-for="Summary" class="text-danger"></span>
+    </div>
+
+    <!-- Description textarea -->
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <!-- Type dropdown -->
@@ -76,7 +79,6 @@
 
     <!-- Team dropdown -->
     <div class="form-group">
-        {
         <label asp-for="Team">Team</label>
         <select asp-for="Team" class="form-control" required>
             <option value="">Select a Team</option>
@@ -89,12 +91,11 @@
         </select>
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
-    }
+
     <!-- Submit button -->
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
-<!-- Link back to the ticket list -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

@@ -4,11 +4,22 @@
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="TicketID" />
+    <!-- Display Ticket ID -->
+    <div class="form-group">
+        <label>Ticket ID</label>
+        <input type="text" value="@Model.TicketID" class="form-control" readonly />
+    </div>
 
     <div class="form-group">
         <label asp-for="CustomerName">Customer Name</label>
         <input asp-for="CustomerName" class="form-control" />
         <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+    <!-- Email Address input -->
+    <div class="form-group">
+        <label asp-for="EmailAddress">Email Address</label>
+        <input asp-for="EmailAddress" class="form-control" />
+        <span asp-validation-for="EmailAddress" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -16,7 +27,12 @@
         <input asp-for="EmployeeName" class="form-control" />
         <span asp-validation-for="EmployeeName" class="text-danger"></span>
     </div>
-
+    <!-- Summary input -->
+    <div class="form-group">
+        <label asp-for="Summary">Summary</label>
+        <input asp-for="Summary" class="form-control" />
+        <span asp-validation-for="Summary" class="text-danger"></span>
+    </div>
     <div class="form-group">
         <label asp-for="Description">Description</label>
         <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
@@ -33,12 +49,7 @@
         <input asp-for="Category" class="form-control" />
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
-    <!-- Summary input -->
-    <div class="form-group">
-        <label asp-for="Summary">Summary</label>
-        <input asp-for="Summary" class="form-control" />
-        <span asp-validation-for="Summary" class="text-danger"></span>
-    </div>
+   
     <!-- Type dropdown -->
     <div class="form-group">
         <label asp-for="Type">Type</label>

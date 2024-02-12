@@ -20,13 +20,14 @@
     </div>
 </form>
 
-@if (Model != null && Model.Any())
+
 {
     <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Customer Name</th>
+                <th>Email</th>
                 <th>Employee Name</th>
                 <th>Summary</th> <!-- Added Summary -->
                 <th>Type</th> <!-- Added Type -->
@@ -42,6 +43,7 @@
                 <tr>
                     <td>@ticket.TicketID</td>
                     <td>@ticket.CustomerName</td>
+                    <td>@ticket.EmailAddress</td>
                     <td>@ticket.EmployeeName</td>
                     <td>@ticket.Summary</td> <!-- Display Summary -->
                     <td>@ticket.Type</td> <!-- Display Type -->
@@ -58,6 +60,3 @@
     </table>
 }
 else
-{
-    <p>No tickets found.</p>
-}

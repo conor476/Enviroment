@@ -1,39 +1,51 @@
 ﻿
-
-using Enviroment.Data;
-using Enviroment.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Enviroment.Data;
+using Enviroment.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
-
-namespace Enviroment.Controllers;
+namespace Environment.Controllers;
 public class TicketController : Controller
+
 {
     private readonly HelpdeskContext _context;
 
-    public TicketController(HelpdeskContext context)
+    // Inject UserManager into your controller
+    private readonly UserManager<User> _userManager;
+
+    public TicketController(HelpdeskContext context, UserManager<User> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
-
-    // Displays all tickets or filters by search string, and redirects to edit page if one ticket is found.
     public async Task<IActionResult> Index(string searchString)
     {
         var ticketsQuery = _context.Tickets.AsQueryable();
+
+        // Check if the user is not an admin
+        if (!User.IsInRole("Admin"))
+        {
+            // Get the current user's email address
+            string userEmail = User.Identity.Name; // Adjust this if needed
+
+            // Filter tickets to show only those associated with the logged-in user's email
+            ticketsQuery = ticketsQuery.Where(t => t.EmailAddress == userEmail);
+        }
 
         if (!string.IsNullOrEmpty(searchString))
         {
             ticketsQuery = ticketsQuery.Where(t => t.TicketID.ToString().Contains(searchString)
                                                    || t.CustomerName.Contains(searchString)
                                                    // Include other fields if necessary for the search.
-                                                   // Consider including Summary and Type in the search criteria if needed
                                                    );
         }
 
         var tickets = await ticketsQuery.ToListAsync();
 
-        // Redirect to the edit page if only one ticket is found.
+        // Redirect to the edit page if only one ticket is found
         if (tickets.Count == 1)
         {
             return RedirectToAction("Edit", new { id = tickets.Single().TicketID });
@@ -61,21 +73,43 @@ public class TicketController : Controller
         ViewBag.Categories = new SelectList(categories, "Case_Name", "Case_Name");
         ViewBag.CategoryDescriptions = categories.ToDictionary(c => c.Case_Name, c => c.Description);
 
+        ViewBag.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier); // Set the user ID
         return View();
     }
 
-    // Processes ticket creation.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Ticket ticket)
+    public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type")] Ticket ticket, string userEmail = "")
     {
+        // If an admin is logged in and an email is provided
+        if (User.IsInRole("Admin") && !string.IsNullOrEmpty(userEmail))
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user != null)
+            {
+                ticket.CustomerName = user.Id; // Assuming 'Id' is the user ID in your User model
+                ticket.EmailAddress = user.Email; // Set the email address from the user found by email
+            }
+        }
+        else // For non-admin users, automatically set their own ID and email
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ticket.CustomerName = userId;
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                ticket.EmailAddress = user.Email; // Set the email address from the logged-in user
+            }
+        }
+
         if (ModelState.IsValid)
         {
             _context.Add(ticket);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Edit", new { id = ticket.TicketID });
         }
 
+        // Logic to handle form re-display in case of invalid state
         var categories = await _context.Categorys
                                        .Select(c => new { c.Case_Name, c.Description })
                                        .ToListAsync();
@@ -104,7 +138,7 @@ public class TicketController : Controller
     // Processes ticket editing with new note functionality.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
+    public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
     {
         if (id != ticket.TicketID)
         {
@@ -113,8 +147,11 @@ public class TicketController : Controller
 
         if (!string.IsNullOrEmpty(ticket.NewNote))
         {
-            // Append the new note with a timestamp.
-            ticket.Description += $"\n[Note added on {DateTime.Now}]: {ticket.NewNote}";
+            // Get the current user's name
+            string userName = User.Identity.Name;
+
+            // Append the new note with a timestamp and the user's name.
+            ticket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
         }
 
         if (ModelState.IsValid)
@@ -139,7 +176,6 @@ public class TicketController : Controller
         }
         return View(ticket);
     }
-
 
     // Shows confirmation for deleting a ticket.
     public async Task<IActionResult> Delete(int? id)
@@ -172,3 +208,4 @@ public class TicketController : Controller
         return RedirectToAction(nameof(Index));
     }
 }
+

@@ -76,6 +76,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="bin\Debug\net7.0\af\Humanizer.resources.dll" />
     <None Include="bin\Debug\net7.0\ar\Humanizer.resources.dll" />
     <None Include="bin\Debug\net7.0\Azure.Core.dll" />
