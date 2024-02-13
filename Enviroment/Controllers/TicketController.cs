@@ -82,7 +82,7 @@ public class TicketController : Controller
             ticket.EmailAddress = User.Identity.Name;
         }
 
-        //if (ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             _context.Add(ticket);
             await _context.SaveChangesAsync();
