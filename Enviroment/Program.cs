@@ -1,14 +1,16 @@
 using Enviroment.Data;
-using Enviroment.Models; // Ensure this is using the correct namespace for your User class
+using Enviroment.Models; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-// Add Razor Pages services
 builder.Services.AddRazorPages();
 
 // Add DbContext to the services.
@@ -17,8 +19,12 @@ builder.Services.AddDbContext<HelpdeskContext>(options =>
 
 // Configure Identity services
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>() // Add roles to the identity configuration
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<HelpdeskContext>();
+
+// Configure EmailService
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<EmailService>();
 
 var app = builder.Build();
 
@@ -34,19 +40,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // This is necessary for ASP.NET Core Identity
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Map routes for Razor Pages
 app.MapRazorPages();
-
-// Map routes for MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-SeedRoles(app.Services).Wait(); // Seed roles
-SeedUsersAndRoles(app.Services).Wait(); // Seed users and assign roles
+
+SeedRoles(app.Services).Wait();
+SeedUsersAndRoles(app.Services).Wait();
 app.Run();
+
 async Task SeedRoles(IServiceProvider serviceProvider)
 {
     // Seed roles if they don't exist
@@ -71,7 +76,6 @@ async Task SeedUsersAndRoles(IServiceProvider serviceProvider)
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    // Seed roles
     string[] roleNames = { "User", "Admin" };
     foreach (var roleName in roleNames)
     {
@@ -81,13 +85,12 @@ async Task SeedUsersAndRoles(IServiceProvider serviceProvider)
         }
     }
 
-    // Seed users and assign roles for you to have one admin and one user account pregenerated
     await SeedUserAsync(userManager, "Admin@helpdesk.com", "Password1!", "Admin");
     await SeedUserAsync(userManager, "User@gmail.com", "Password1!", "User");
 }
+
 async Task SeedUserAsync(UserManager<User> userManager, string email, string password, string role)
 {
-    // Seed users and assign roles
     var user = await userManager.FindByEmailAsync(email);
     if (user == null)
     {
@@ -98,11 +101,9 @@ async Task SeedUserAsync(UserManager<User> userManager, string email, string pas
             var addToRoleResult = await userManager.AddToRoleAsync(user, role);
             if (!addToRoleResult.Succeeded)
             {
-                // Handle any errors that occurred during adding the user to the role
                 throw new InvalidOperationException($"Error adding user {email} to role {role}");
             }
 
-            // Generate the email confirmation token and confirm the email
             var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmEmailResult = await userManager.ConfirmEmailAsync(user, code);
             if (!confirmEmailResult.Succeeded)
@@ -112,12 +113,43 @@ async Task SeedUserAsync(UserManager<User> userManager, string email, string pas
         }
         else
         {
-            // Handle any errors that occurred during user creation
             throw new InvalidOperationException($"Error creating user {email}");
         }
     }
-    else
+}
+
+public class EmailService
+{
+    private readonly EmailSettings _emailSettings;
+
+    public EmailService(IOptions<EmailSettings> emailSettings)
     {
-        // User already exists - you might want to check if the email is confirmed or perform other updates
+        _emailSettings = emailSettings.Value;
     }
+
+    public async Task SendEmailAsync(string email, string subject, string message)
+    {
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
+        emailMessage.To.Add(new MailboxAddress("", email));
+        emailMessage.Subject = subject;
+        emailMessage.Body = new TextPart("plain") { Text = message };
+
+        using (var client = new SmtpClient())
+        {
+            await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.MailPort, MailKit.Security.SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.Password);
+            await client.SendAsync(emailMessage);
+            await client.DisconnectAsync(true);
+        }
+    }
+}
+
+public class EmailSettings
+{
+    public string MailServer { get; set; }
+    public int MailPort { get; set; }
+    public string SenderName { get; set; }
+    public string SenderEmail { get; set; }
+    public string Password { get; set; }
 }

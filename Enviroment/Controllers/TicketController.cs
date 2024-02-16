@@ -1,22 +1,25 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Enviroment.Data;
 using Enviroment.Models;
+using System.Threading.Tasks;
+using System.Linq;
 
-namespace Environment.Controllers;
+namespace Enviroment.Controllers;
 public class TicketController : Controller
 {
     private readonly HelpdeskContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly EmailService EmailService;
 
-    public TicketController(HelpdeskContext context, UserManager<User> userManager)
+    public TicketController(HelpdeskContext context, UserManager<User> userManager, EmailService emailService)
     {
         _context = context;
         _userManager = userManager;
+        EmailService = emailService;
     }
 
     public async Task<IActionResult> Index(string searchString)
@@ -126,6 +129,9 @@ public class TicketController : Controller
         {
             string userName = User.Identity.Name;
             ticket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
+
+            // Send an email with the note content
+            await EmailService.SendEmailAsync(ticket.EmailAddress, "New Note Added to Your Ticket", ticket.NewNote);
         }
 
         if (ModelState.IsValid)
@@ -157,7 +163,6 @@ public class TicketController : Controller
         {
             return NotFound();
         }
-
         var ticket = await _context.Tickets.FirstOrDefaultAsync(m => m.TicketID == id);
         if (ticket == null)
         {
@@ -166,7 +171,6 @@ public class TicketController : Controller
         return View(ticket);
     }
 
-    // Processes ticket deletion.
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -180,4 +184,3 @@ public class TicketController : Controller
         return RedirectToAction(nameof(Index));
     }
 }
-

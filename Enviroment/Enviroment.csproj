@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.3.2" />
+    <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
@@ -334,6 +335,12 @@
     <None Include="Views\Employee\Edit.cshtml" />
     <None Include="Views\Employee\Index.cshtml" />
     <None Include="Views\Ticket\Index.cshtml" />
+    <None Include="wwwroot\assets\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\assets\fonts\Simple-Line-Icons.svg" />
+    <None Include="wwwroot\assets\fonts\Simple-Line-Icons.woff2" />
+    <None Include="wwwroot\assets\js\baguetteBox.min.js" />
+    <None Include="wwwroot\assets\js\theme.js" />
+    <None Include="wwwroot\assets\js\vanilla-zoom.js" />
   </ItemGroup>
 
 </Project>

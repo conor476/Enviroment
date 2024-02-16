@@ -1,6 +1,6 @@
 ﻿@model Enviroment.Models.Ticket
 
-<h2>Edit Ticket</h2>  
+<h2>Edit Ticket</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="TicketID" />
@@ -15,6 +15,7 @@
         <input asp-for="CustomerName" class="form-control" />
         <span asp-validation-for="CustomerName" class="text-danger"></span>
     </div>
+
     <!-- Email Address input -->
     <div class="form-group">
         <label asp-for="EmailAddress">Email Address</label>
@@ -27,16 +28,18 @@
         <input asp-for="EmployeeName" class="form-control" />
         <span asp-validation-for="EmployeeName" class="text-danger"></span>
     </div>
+
     <!-- Summary input -->
     <div class="form-group">
         <label asp-for="Summary">Summary</label>
         <input asp-for="Summary" class="form-control" />
         <span asp-validation-for="Summary" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Description">Description</label>
         <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
-        <button type="button" class="btn btn-success btn-sm" id="addNoteButton" onclick="showNoteArea()">Add Note</button>
+        <button type="button" class="btn btn-success btn-sm" id="addNoteButton" onclick="submitNote()">Add Note</button>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
@@ -44,12 +47,13 @@
         <textarea asp-for="NewNote" class="form-control" rows="4" placeholder="Type your note here..."></textarea>
     </div>
 
+    <!-- Category input -->
     <div class="form-group">
         <label asp-for="Category">Category</label>
         <input asp-for="Category" class="form-control" />
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
-   
+
     <!-- Type dropdown -->
     <div class="form-group">
         <label asp-for="Type">Type</label>
@@ -88,14 +92,15 @@
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
 
-
-
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>
 
 <script>
-    function showNoteArea() {
+    function submitNote() {
+        // Show the note area
         document.getElementById("noteArea").style.display = "block";
+        // Optionally, automatically focus on the note textarea
+        document.getElementById("NewNote").focus();
     }
 </script>
