@@ -1,22 +1,37 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative; /* Keep this as it is */
+    min-height: 100%; /* Keep this as it is */
+    height: 100%; /* Add this for Flexbox */
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* Adjustments for Flexbox layout */
+body, html {
+    height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    display: flex; /* Flexbox layout */
+    flex-direction: column; /* Column layout for flex items */
+    margin-bottom: 30; /* Adjusted to 0 as the footer is now flex */
+}
+
+/* For main content to take available space */
+main {
+    flex-grow: 1; /* Grow to fill available space */
+}
+
+/* Footer at the bottom */
+footer {
+    margin-top: auto; /* Push footer to the bottom */
 }

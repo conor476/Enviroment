@@ -6,56 +6,58 @@
 <h2>Create New Ticket</h2>
 
 <form asp-action="Create" method="post">
-    @if (User.IsInRole("Admin"))
-    {
-        <!-- Admin-Specific Fields -->
-        <!-- User Email Address Input -->
-        <div class="form-group">
-            <label asp-for="EmailAddress">User Email Address</label>
-            <input asp-for="EmailAddress" class="form-control" />
-            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+            <!-- Your left column fields here -->
+
+            <!-- Shared Fields -->
+            <!-- Customer Name Input -->
+            <div class="form-group">
+                <label asp-for="CustomerName">Customer Name</label>
+                <input asp-for="CustomerName" class="form-control" />
+                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            </div>
+
+            <!-- Employee Name Input -->
+            <!-- Assuming EmployeeName is a field you want to add -->
+            <div class="form-group">
+                <label asp-for="EmployeeName">Employee Name</label>
+                <input asp-for="EmployeeName" class="form-control" />
+                <span asp-validation-for="EmployeeName" class="text-danger"></span>
+            </div>
+
+            <!-- Customer Email Input -->
+            <div class="form-group">
+                <label asp-for="EmailAddress">Customer Email</label>
+                <input asp-for="EmailAddress" class="form-control" />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
+
+            <!-- Summary Input -->
+            <div class="form-group">
+                <label asp-for="Summary">Summary</label>
+                <input asp-for="Summary" class="form-control" />
+                <span asp-validation-for="Summary" class="text-danger"></span>
+            </div>
         </div>
-    }
-    else
-    {
-        <!-- Regular User: Hidden Email Address Field -->
-        <input type="hidden" asp-for="EmailAddress" value="@User.Identity.Name" />
-    }
 
-    <!-- Shared Fields -->
-    <!-- Category Dropdown -->
-    <div class="form-group">
-        <label asp-for="Category">Category</label>
-        <select asp-for="Category" id="categoryDropdown" class="form-control" required>
-            <option value="">Select a Category</option>
-            @foreach (var category in ViewBag.Categories as SelectList)
-            {
-                <option value="@category.Value">@category.Text</option>
-            }
-        </select>
-        <span asp-validation-for="Category" class="text-danger"></span>
-    </div>
-    <!-- Summary Input -->
-    <div class="form-group">
-        <label asp-for="CustomerName">CustomerName</label>
-        <input asp-for="CustomerName" class="form-control" />
-        <span asp-validation-for="CustomerName" class="text-danger"></span>
-    </div>
-    <!-- Summary Input -->
-    <div class="form-group">
-        <label asp-for="Summary">Summary</label>
-        <input asp-for="Summary" class="form-control" />
-        <span asp-validation-for="Summary" class="text-danger"></span>
-    </div>
-
-    <!-- Description Textarea -->
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <!-- Type Dropdown -->
+        <!-- Right Column -->
+        <div class="col-md-6">
+            <!-- Your right column fields here -->
+            <!-- Category Dropdown -->
+            <div class="form-group">
+                <label asp-for="Category">Category</label>
+                <select asp-for="Category" id="categoryDropdown" class="form-control" required>
+                    <option value="">Select a Category</option>
+                    @foreach (var category in ViewBag.Categories as SelectList)
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <!-- Type Dropdown -->
     <div class="form-group">
         <label asp-for="Type">Type</label>
         <select asp-for="Type" class="form-control" required>
@@ -91,6 +93,14 @@
             <option value="Triage">Triage</option>
         </select>
         <span asp-validation-for="Team" class="text-danger"></span>
+    </div>
+        </div>
+    </div>
+    <!-- Description Textarea and Submit Button outside the grid for full width -->
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <!-- Submit Button -->

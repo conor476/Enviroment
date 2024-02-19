@@ -2,88 +2,130 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
+    <link rel="stylesheet" href="assets/css/baguetteBox.min.css">
+    <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
+</head>
 
-    <button id="testPasswordBtn" class="btn btn-success" onclick="togglePasswordInput()">Test Your Password</button>
+<body>
+    <main class="page landing-page">
+        <section class="clean-block clean-hero" style="background-image:url(&quot;assets/img/tech/image4.jpg&quot;);color:rgba(9, 162, 255, 0.85);">
+            <div class="text">
+                <h2>Welcome to the IT helpdesk</h2>
+                <p>We are happy to assist you with any issues you may be having. Please feel free to sign in and log a ticket with us if you are having any issues or phone us on 0214902120.</p>
+            </div>
+        </section>
+        <section class="clean-block clean-info dark">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text-info">Info</h2>
+                    <p>We are proud to support you with out top of the line facilities and esteemed customer service. You can find us on the third floor of the Kane building where our front desk team will be happy to assist you</p>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-6"><img class="img-thumbnail" src="assets/img/clipboard-image-2.png"></div>
+                    <div class="col-md-6">
+                        <h3>Test your password&nbsp;</h3>
+                        <div class="getting-started-info">
+                            <p>Please use our password strength tester to make sure your password meets your industries standard&nbsp;</p>
+                        </div>
 
-    <div id="passwordInputDiv" style="display:none;">
-        <input type="password" id="passwordInput" placeholder="Enter your password" class="form-control" oninput="updatePasswordStrength()" />
-        <p>Password Strength: <span id="passwordRating">0</span>/5</p>
-        <p id="passwordLengthMessage" class="text-danger" style="display:none;">The password must be at least 10 characters.</p>
-        <p id="passwordCapitalMessage" class="text-danger" style="display:none;">The password must contain at least 1 capital letter.</p>
-        <p id="passwordNumberMessage" class="text-danger" style="display:none;">The password must contain a number.</p>
-        <p id="passwordSpecialCharacterMessage" class="text-danger" style="display:none;">The password must contain a special character.</p>
-        <p id="passwordSequentialMessage" class="text-danger" style="display:none;">Numbers in the password cannot be sequential.</p>
-    </div>
-</div>
+                        <button id="testPasswordBtn" class="btn btn-success" onclick="togglePasswordInput()">Test Your Password</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center"
+               
 
-@section Scripts {
-    <script>
-        function togglePasswordInput() {
-            var passwordDiv = document.getElementById('passwordInputDiv');
-            passwordDiv.style.display = passwordDiv.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function updatePasswordStrength() {
-            let password = document.getElementById('passwordInput').value;
-            let rating = 0;
-
-            if (password.length >= 10) {
-                rating++;
-                document.getElementById('passwordLengthMessage').style.display = 'none';
-            } else {
-                document.getElementById('passwordLengthMessage').style.display = 'block';
+                <div id="passwordInputDiv" style="display:none;">
+                    <input type="password" id="passwordInput" placeholder="Enter your password" class="form-control" oninput="updatePasswordStrength()" />
+                    <p>Password Strength: <span id="passwordRating">0</span>/5</p>
+                    <p id="passwordLengthMessage" class="text-danger" style="display:none;">The password must be at least 10 characters.</p>
+                    <p id="passwordCapitalMessage" class="text-danger" style="display:none;">The password must contain at least 1 capital letter.</p>
+                    <p id="passwordNumberMessage" class="text-danger" style="display:none;">The password must contain a number.</p>
+                    <p id="passwordSpecialCharacterMessage" class="text-danger" style="display:none;">The password must contain a special character.</p>
+                    <p id="passwordSequentialMessage" class="text-danger" style="display:none;">Numbers in the password cannot be sequential.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    @section Scripts {
+        <script>
+            function togglePasswordInput() {
+                var passwordDiv = document.getElementById('passwordInputDiv');
+                passwordDiv.style.display = passwordDiv.style.display === 'none' ? 'block' : 'none';
             }
 
-            if (/[0-9]/.test(password) && /[a-zA-Z]/.test(password)) {
-                rating++;
-                document.getElementById('passwordNumberMessage').style.display = 'none';
-            } else {
-                document.getElementById('passwordNumberMessage').style.display = 'block';
-            }
+            function updatePasswordStrength() {
+                let password = document.getElementById('passwordInput').value;
+                let rating = 0;
 
-            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
-                rating++;
-                document.getElementById('passwordCapitalMessage').style.display = 'none';
-            } else {
-                document.getElementById('passwordCapitalMessage').style.display = 'block';
-            }
-
-            if (/[\!\#\$\%\^\&\*\(\)\-\_\=\+\[\]\{\}\;\:\'\"\,\<\.\>\/\?\|\\`~]/.test(password)) {
-                rating++;
-                document.getElementById('passwordSpecialCharacterMessage').style.display = 'none';
-            } else {
-                document.getElementById('passwordSpecialCharacterMessage').style.display = 'block';
-            }
-
-            if (!isSequentialNumbers(password)) {
-                rating++;
-                document.getElementById('passwordSequentialMessage').style.display = 'none';
-            } else {
-                document.getElementById('passwordSequentialMessage').style.display = 'block';
-            }
-
-            document.getElementById('passwordRating').textContent = rating;
-        }
-
-        function isSequentialNumbers(password) {
-            let numbers = password.match(/[0-9]+/g);
-            if (!numbers) return false;
-            for (let num of numbers) {
-                if (isSequential(num)) return true;
-            }
-            return false;
-        }
-
-        function isSequential(num) {
-            for (let i = 1; i < num.length; i++) {
-                if (num.charCodeAt(i) === num.charCodeAt(i - 1) + 1) {
-                    return true;
+                if (password.length >= 10) {
+                    rating++;
+                    document.getElementById('passwordLengthMessage').style.display = 'none';
+                } else {
+                    document.getElementById('passwordLengthMessage').style.display = 'block';
                 }
+
+                if (/[0-9]/.test(password) && /[a-zA-Z]/.test(password)) {
+                    rating++;
+                    document.getElementById('passwordNumberMessage').style.display = 'none';
+                } else {
+                    document.getElementById('passwordNumberMessage').style.display = 'block';
+                }
+
+                if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
+                    rating++;
+                    document.getElementById('passwordCapitalMessage').style.display = 'none';
+                } else {
+                    document.getElementById('passwordCapitalMessage').style.display = 'block';
+                }
+
+                if (/[\!\#\$\%\^\&\*\(\)\-\_\=\+\[\]\{\}\;\:\'\"\,\<\.\>\/\?\|\\`~]/.test(password)) {
+                    rating++;
+                    document.getElementById('passwordSpecialCharacterMessage').style.display = 'none';
+                } else {
+                    document.getElementById('passwordSpecialCharacterMessage').style.display = 'block';
+                }
+
+                if (!isSequentialNumbers(password)) {
+                    rating++;
+                    document.getElementById('passwordSequentialMessage').style.display = 'none';
+                } else {
+                    document.getElementById('passwordSequentialMessage').style.display = 'block';
+                }
+
+                document.getElementById('passwordRating').textContent = rating;
             }
-            return false;
-        }
-    </script>
-}
+
+            function isSequentialNumbers(password) {
+                let numbers = password.match(/[0-9]+/g);
+                if (!numbers) return false;
+                for (let num of numbers) {
+                    if (isSequential(num)) return true;
+                }
+                return false;
+            }
+
+            function isSequential(num) {
+                for (let i = 1; i < num.length; i++) {
+                    if (num.charCodeAt(i) === num.charCodeAt(i - 1) + 1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        </script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/js/baguetteBox.min.js"></script>
+        <script src="assets/js/vanilla-zoom.js"></script>
+        <script src="assets/js/theme.js"></script>
+    }
+</body>
+
+
+</html>
