@@ -16,6 +16,27 @@
             background-color: #f4f4f4;
         }
 
+        .side-pane {
+            position: fixed;
+            left: 0;
+            top: 60px; /* Adjust based on the navbar's actual height */
+            width: 280px;
+            height: calc(100% - 60px); /* Adjust based on the navbar's actual height */
+            background-color: lightblue;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+            .side-pane a, .side-pane form {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+        .content-area {
+            margin-left: 240px; /* Adjust based on side panel width */
+            padding-top: 60px; /* Adjust based on the navbar's actual height */
+        }
+
         h2 {
             color: #333;
             text-align: center;
@@ -24,6 +45,7 @@
         .btn-fixed-width {
             width: 100px; 
         }
+
         .btn {
             border: none;
             padding: 10px 20px;
@@ -51,29 +73,31 @@
         }
 
         .table {
-            width: 90%;
-            margin: 20px auto;
+            width: 85%;
+            margin: 20px 0 20px auto;
             border-collapse: collapse;
+
         }
 
-            .table th, .table td {
-                padding: 10px;
-                border: 1px solid #ddd;
-                text-align: left;
-            }
+        .table th, .table td {
+            padding: 5px;
+            border: 1px solid #ddd;
+            text-align: left;
+            
+        }
 
-            .table thead {
-                background-color: #333;
-                color: white;
-            }
+        .table thead {
+            background-color: #333;
+            color: white;
+        }
 
-            .table tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
-            .table tr:hover {
-                background-color: #ddd;
-            }
+        .table tr:hover {
+            background-color: #ddd;
+        }
 
         form {
             text-align: center;
@@ -100,41 +124,35 @@
 </head>
 <body>
 
-    <!-- Page Title -->
-    <h2>Tickets</h2>
+    <div class="side-pane">
+        <!-- Search Form -->
+        <form asp-action="Index" method="get">
+            <div class="form-actions no-color">
+                <p>
+                    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search Tickets" />
+                    <input type="submit" value="Search" class="btn btn-default" />
+                </p>
+            </div>
+        </form>
 
-    <!-- Action Buttons -->
-    <p>
+        <!-- Create Button -->
         <a asp-action="Create" class="btn btn-primary">Create New Ticket</a>
-        <a asp-action="OpenTickets" class="btn btn-info">Show Open Tickets</a>
-    </p>
 
-    <!-- Search Form -->
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search Tickets" />
-                <input type="submit" value="Search" class="btn btn-default" />
-            </p>
-        </div>
-    </form>
-    <!-- Pagination Controls -->
-    <div>
-
-        @if (Model.PageNumber > 1) // Check if not the first page
+        <!-- Pagination Controls -->
+        @if (Model.PageNumber > 1)
         {
             <a href="@Url.Action("Index", new { page = Model.PageNumber - 1, searchString = ViewBag.CurrentFilter })">Load Previous Ten Results</a>
         }
-        @if (Model.PageNumber < Model.PageCount) // Check if not the last page
+        @if (Model.PageNumber < Model.PageCount)
         {
             <a href="@Url.Action("Index", new { page = Model.PageNumber + 1, searchString = ViewBag.CurrentFilter })">Load Next Ten Results</a>
         }
-
     </div>
-    <!-- Ticket List Table -->
+
+    <h2>Tickets</h2>
+
     <table class="table">
         <thead>
-            <!-- Table Headers -->
             <tr>
                 <th>ID</th>
                 <th>Customer Name</th>
@@ -149,7 +167,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Table Rows -->
             @foreach (var ticket in Model)
             {
                 <tr>
@@ -160,7 +177,7 @@
                     <td>@ticket.Summary</td>
                     <td>@ticket.Type</td>
                     <td>@ticket.Category</td>
-                    <td>@ticket.Status</td>
+                    <td style="@GetBackgroundColor(ticket.Status)">@ticket.Status</td>
                     <td>@ticket.Team</td>
                     <td>
                         <!-- Action Buttons for Each Ticket -->
@@ -181,3 +198,20 @@
  
 </body>
 </html>
+
+@functions {
+    private string GetBackgroundColor(string status)
+    {
+        switch (status)
+        {
+            case "Open":
+                return "background-color: #90ee90;";
+            case "Suspended":
+                return "background-color: #FCFF5C;";
+            case "Closed":
+                return "background-color: #F3686D;";
+            default:
+                return "";
+        }
+    }
+}

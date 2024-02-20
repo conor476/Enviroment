@@ -17,6 +17,12 @@ namespace Enviroment.Models
         [StringLength(2550)] // Optional field, you can adjust the max length for the description
         public string Description { get; set; }
 
+        [StringLength(2550)] // Optional field, you can adjust the max length for the description
+        public string Group { get; set; }
+
+        [StringLength(2550)] // Optional field, you can adjust the max length for the description
+        public string About { get; set; }
+
         public Category()
         {
             // Initialization of fields if necessary

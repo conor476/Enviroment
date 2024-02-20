@@ -1,42 +1,53 @@
-﻿@model IEnumerable<Enviroment.Models.Category>
-@{
+﻿@{
     ViewData["Title"] = "Category List";
 }
-<h2>Categories</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Category</a>
-</p>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar containing the group names -->
+        <div class="col-md-2">
+            <a href="@Url.Action("Create", "Category")" class="btn btn-primary">Create New Case Type</a>
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
-@if (Model != null && Model.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Loop over all categories as there is multiple entries -->
-            @foreach (var category in Model)
-            {
-                <tr>
-                    <td>@category.Category_id</td>
-                    <td>@category.Case_Name</td>
-                    <td>@category.Description</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@category.Category_id" class="btn btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@category.Category_id" class="btn btn-danger">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No categories found.</p>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var groupId = "group-" + i; // Ensuring unique ID
+                    <a class="nav-link" id="@groupId-tab" data-toggle="pill" href="#@groupId" role="tab" aria-controls="@groupId" aria-selected="false">@Model[i].GroupName</a>
+
+                }
+            </div>
+        </div>
+
+        <!-- Content area for categories -->
+        <div class="col-md-10">
+            <div class="tab-content" id="v-pills-tabContent">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var groupId = "group-" + i; // Ensuring unique ID
+                    <div class="tab-pane fade" id="@groupId" role="tabpanel" aria-labelledby="@groupId-tab">
+                        <h3>@Model[i].GroupName</h3>
+
+                        <ul class="list-group">
+                            @foreach (var category in Model[i].Categories)
+                            {
+                                <li class="list-group-item">
+                                    <a href="@Url.Action("Edit", "Category", new { id = category.Category_id })">@category.Case_Name</a>
+                                    
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+            <!-- Button to create a new case -->
+            <div class="text-right mt-3">
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include Bootstrap's JS file for the tabs to function -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 }
