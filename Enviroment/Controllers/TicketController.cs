@@ -23,37 +23,35 @@ namespace Enviroment.Controllers
 
         public async Task<IActionResult> Index(string searchString, int? page)
         {
-            // Check if searchString is an exact ticket number
-            if (int.TryParse(searchString, out var ticketId) && await _context.Tickets.AnyAsync(t => t.TicketID == ticketId))
-            {
-                return RedirectToAction("Edit", new { id = ticketId });
-            }
-
             var pageNumber = page ?? 1;
-            var pageSize = 10; // Set your page size, 10 is an example
+            var pageSize = 10; // Set your desired page size
 
             var ticketsQuery = _context.Tickets.AsQueryable();
 
+            // Restrict tickets to the current user's email if not an admin
             if (!User.IsInRole("Admin"))
             {
                 string userEmail = User.Identity.Name;
                 ticketsQuery = ticketsQuery.Where(t => t.EmailAddress == userEmail);
             }
 
+            // Apply search filter if a searchString is provided
             if (!string.IsNullOrEmpty(searchString))
             {
                 ticketsQuery = ticketsQuery.Where(t => t.TicketID.ToString().Contains(searchString)
                                                        || t.CustomerName.Contains(searchString));
             }
 
-            var pagedTickets = await ticketsQuery.OrderBy(t => t.TicketID)
+            // Sorting tickets by LastUpdated in descending order
+            var pagedTickets = await ticketsQuery.OrderBy(t => t.LastUpdated) // Changed line for sorting
                                                  .ToPagedListAsync(pageNumber, pageSize);
 
             return View(pagedTickets);
         }
 
 
-public async Task<IActionResult> OpenTickets(int? page)
+
+        public async Task<IActionResult> OpenTickets(int? page)
         {
             int pageSize = 10; // Set the number of items per page
             int pageNumber = (page ?? 1);
@@ -139,6 +137,9 @@ public async Task<IActionResult> OpenTickets(int? page)
                 string userName = User.Identity.Name;
                 ticket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
 
+                // Update the LastUpdated property
+                ticket.LastUpdated = DateTime.Now;
+
                 // Send an email with the note content only if the user is an admin
                 if (User.IsInRole("Admin"))
                 {
@@ -168,6 +169,7 @@ public async Task<IActionResult> OpenTickets(int? page)
             }
             return View(ticket);
         }
+
 
         public async Task<IActionResult> Delete(int? id)
         {
