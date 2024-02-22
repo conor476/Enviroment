@@ -12,6 +12,8 @@
         public string Team { get; set; }
         public string Summary { get; set; }
         public string Type { get; set; }
+        public DateTime? OpenedDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public DateTime? LastUpdated { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]

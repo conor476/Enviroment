@@ -58,8 +58,6 @@ namespace Enviroment.Controllers
             return View(pagedTickets);
         }
 
-
-
         public async Task<IActionResult> OpenTickets(int? page)
         {
             int pageSize = 10; // Set the number of items per page
@@ -103,6 +101,7 @@ namespace Enviroment.Controllers
 
             if (ModelState.IsValid)
             {
+                ticket.OpenedDate = DateTime.Now; // Set OpenedDate when creating the ticket
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Edit", new { id = ticket.TicketID });
@@ -131,12 +130,17 @@ namespace Enviroment.Controllers
             }
             return View(ticket);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
         {
             if (id != ticket.TicketID)
+            {
+                return NotFound();
+            }
+
+            var existingTicket = await _context.Tickets.AsNoTracking().FirstOrDefaultAsync(t => t.TicketID == id);
+            if (existingTicket == null)
             {
                 return NotFound();
             }
@@ -158,27 +162,44 @@ namespace Enviroment.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                // Check if the status is changing to "Closed"
+                if (existingTicket.Status != "Closed" && ticket.Status == "Closed")
                 {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
+                    ticket.ClosedDate = DateTime.Now; // Set the ClosedDate when status changes to Closed
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Tickets.Any(e => e.TicketID == ticket.TicketID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(ticket);
         }
+        public async Task<IActionResult> KPIs()
+        {
+            var categories = _context.Categorys.ToList();
+            var kpiData = new List<CategoryKPI1>();
 
+            foreach (var category in categories)
+            {
+                var tickets = _context.Tickets
+                                      .Where(t => t.Category == category.Case_Name &&
+                                                  t.OpenedDate != null &&
+                                                  t.ClosedDate != null)
+                                      .ToList();
+
+                if (tickets.Any())
+                {
+                    var averageSolveTime = tickets.Average(t => (t.ClosedDate - t.OpenedDate).Value.TotalHours);
+                    kpiData.Add(new CategoryKPI1
+                    {
+                        CategoryName = category.Case_Name,
+                        AverageSolveTime = averageSolveTime
+                    });
+                }
+            }
+
+            return View(kpiData);
+        }
 
         public async Task<IActionResult> Delete(int? id)
         {
@@ -210,4 +231,3 @@ namespace Enviroment.Controllers
         }
     }
 }
-

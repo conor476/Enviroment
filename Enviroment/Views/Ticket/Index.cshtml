@@ -17,24 +17,27 @@
         }
 
         .side-pane {
-            position: fixed;
+            position: absolute;
             left: 0;
-            top: 60px; /* Adjust based on the navbar's actual height */
+            top: 80px; /* Adjust based on the navbar's actual height */
             width: 280px;
-            height: calc(100% - 60px); /* Adjust based on the navbar's actual height */
-            background-color: lightblue;
-            padding: 20px;
+            height: calc(100% - 80px); /* Adjust based on the navbar's actual height */
+            background-color: rgba(9, 162, 255, 0.85);
+            padding: 0px;
             box-sizing: border-box;
         }
 
             .side-pane a, .side-pane form {
                 display: block;
-                margin-bottom: 10px;
+                margin-bottom: 0px;
             }
 
         .content-area {
-            margin-left: 240px; /* Adjust based on side panel width */
+            margin-left: 280px; /* Same as the width of the side-pane */
             padding-top: 60px; /* Adjust based on the navbar's actual height */
+            padding-left: 0px; /* Optional: for some spacing from the side-pane */
+            padding-right: 0px; /* Optional: for some spacing from the right edge */
+            width: calc(100% - 280px); /* Adjust width to account for side-pane */
         }
 
         h2 {
@@ -74,7 +77,7 @@
 
         .table {
             width: 85%;
-            margin: 20px 0 20px auto;
+            margin: 20px auto;
             border-collapse: collapse;
 
         }
@@ -117,7 +120,7 @@
 
         input[type="submit"] {
             background-color: #333;
-            color: white;
+            color: D1C8E1;
             cursor: pointer;
         }
     </style>
