@@ -3,25 +3,21 @@
 <h2>Edit Ticket</h2>
 
 <form asp-action="Edit" method="post">
+    <div class="row">
+        <div class="col-md-6">
     <input type="hidden" asp-for="TicketID" />
-    <!-- Display Ticket ID -->
-    <div class="form-group">
-        <label>Ticket ID</label>
-        <input type="text" value="@Model.TicketID" class="form-control" readonly />
-    </div>
 
     <div class="form-group">
         <label asp-for="CustomerName">Customer Name</label>
         <input asp-for="CustomerName" class="form-control" />
         <span asp-validation-for="CustomerName" class="text-danger"></span>
     </div>
-
-    <!-- Email Address input -->
-    <div class="form-group">
-        <label asp-for="EmailAddress">Email Address</label>
-        <input asp-for="EmailAddress" class="form-control" />
-        <span asp-validation-for="EmailAddress" class="text-danger"></span>
-    </div>
+           
+            <div class="form-group">
+                <label asp-for="EmailAddress">Customer Email</label>
+                <input asp-for="EmailAddress" class="form-control" />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
 
     <div class="form-group">
         <label asp-for="EmployeeName">Employee Name</label>
@@ -29,41 +25,30 @@
         <span asp-validation-for="EmployeeName" class="text-danger"></span>
     </div>
 
-    <!-- Summary input -->
-    <div class="form-group">
-        <label asp-for="Summary">Summary</label>
-        <input asp-for="Summary" class="form-control" />
-        <span asp-validation-for="Summary" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
-        <button type="button" class="btn btn-success btn-sm" id="addNoteButton" onclick="submitNote()">Add Note</button>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div id="noteArea" style="display:none;" class="form-group">
-        <textarea asp-for="NewNote" class="form-control" rows="4" placeholder="Type your note here..."></textarea>
-    </div>
-
-    <!-- Category input -->
+        <!-- Summary input -->
+        <div class="form-group">
+            <label asp-for="Summary">Summary</label>
+            <input asp-for="Summary" class="form-control" />
+            <span asp-validation-for="Summary" class="text-danger"></span>
+        </div>
+        </div>
+            <div class="col-md-6">
+        <!-- Type dropdown -->
+        <div class="form-group">
+            <label asp-for="Type">Type</label>
+            <select asp-for="Type" class="form-control" required>
+                <option value="">Select a Type</option>
+                <option value="Service Request">Service Request</option>
+                <option value="Incident">Incident</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
     <div class="form-group">
         <label asp-for="Category">Category</label>
         <input asp-for="Category" class="form-control" />
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>
-
-    <!-- Type dropdown -->
-    <div class="form-group">
-        <label asp-for="Type">Type</label>
-        <select asp-for="Type" class="form-control" required>
-            <option value="">Select a Type</option>
-            <option value="Service Request">Service Request</option>
-            <option value="Incident">Incident</option>
-        </select>
-        <span asp-validation-for="Type" class="text-danger"></span>
-    </div>
+   
 
     <!-- Status dropdown -->
     <div class="form-group">
@@ -91,16 +76,30 @@
         </select>
         <span asp-validation-for="Team" class="text-danger"></span>
     </div>
+        </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" id="descriptionTextarea" rows="6"></textarea>
+        <button type="button" class="btn btn-success btn-sm" id="addNoteButton" onclick="showNoteArea()">Add Note</button>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div id="noteArea" style="display:none;" class="form-group">
+        <textarea asp-for="NewNote" class="form-control" rows="4" placeholder="Type your note here..."></textarea>
+    </div>
+
+
+
+        <div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
 </form>
 
 <script>
-    function submitNote() {
-        // Show the note area
+    function showNoteArea() {
         document.getElementById("noteArea").style.display = "block";
-        // Optionally, automatically focus on the note textarea
-        document.getElementById("NewNote").focus();
     }
 </script>
