@@ -21,7 +21,7 @@ namespace Enviroment.Controllers
             _emailService = emailService;
         }
 
-        public async Task<IActionResult> Index(string searchString, int? page)
+        public async Task<IActionResult> Index(string searchString, string status, int? page)
         {
             var pageNumber = page ?? 1;
             var pageSize = 10; // Set your desired page size
@@ -42,9 +42,18 @@ namespace Enviroment.Controllers
                                                        || t.CustomerName.Contains(searchString));
             }
 
+            // Apply case status filter if provided
+            if (!string.IsNullOrEmpty(status))
+            {
+                ticketsQuery = ticketsQuery.Where(t => t.Status == status);
+            }
+
             // Sorting tickets by LastUpdated in descending order
-            var pagedTickets = await ticketsQuery.OrderBy(t => t.LastUpdated) // Changed line for sorting
+            var pagedTickets = await ticketsQuery.OrderBy(t => t.LastUpdated)
                                                  .ToPagedListAsync(pageNumber, pageSize);
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentStatus = status; // Persist the current status in the view
 
             return View(pagedTickets);
         }
