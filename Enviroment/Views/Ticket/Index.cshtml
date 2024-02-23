@@ -7,13 +7,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
+
     <title>@ViewData["Title"]</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Montserrat;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #WHITE;
         }
 
         .side-pane {
@@ -76,7 +78,7 @@
         }
 
         .table {
-            width: 85%;
+            width: 99%;
             margin: 20px auto;
             border-collapse: collapse;
 
@@ -104,7 +106,7 @@
 
         form {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .form-actions {
@@ -134,12 +136,32 @@
                     <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search Tickets" />
                     <input type="submit" value="Search" class="btn btn-default" />
                 </p>
-                <p>
-                    Status:
-                    <input type="checkbox" name="status" value="Open" @(ViewBag.CurrentStatus == "Open" ? "checked" : "")> Open
-                    <input type="checkbox" name="status" value="Closed" @(ViewBag.CurrentStatus == "Closed" ? "checked" : "")> Closed
-                    <input type="checkbox" name="status" value="Suspended" @(ViewBag.CurrentStatus == "Suspended" ? "checked" : "")> Suspended
-                </p>
+                <div>
+                    <p>
+                        <div class="checkbox-container">
+                        Status:
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" name="status" value="Open" @(ViewBag.CurrentStatus == "Open" ? "checked" : "")>
+                            <label for="statusOpen">Open</label><br>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" name="status" value="Closed" @(ViewBag.CurrentStatus == "Closed" ? "checked" : "")>
+                            <label for="statusClosed">Closed</label><br>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" name="status" value="Suspended" @(ViewBag.CurrentStatus == "Suspended" ? "checked" : "")>
+                            <label for="statusSuspended">Suspended</label><br>
+                        </div>
+                    </p>
+                </div>
+
+                <style>
+                    .checkbox-container {
+                        text-align: left;
+                    }
+                </style>
+
             </div>
         </form>
 
