@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Enviroment.Data;
 using Enviroment.Models;
+using Enviroment.Services;
 using X.PagedList;
 namespace Enviroment.Controllers
 {
@@ -13,18 +14,20 @@ namespace Enviroment.Controllers
         private readonly HelpdeskContext _context;
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
+        private readonly EmailCheckerService _emailCheckerService;
 
-        public TicketController(HelpdeskContext context, UserManager<User> userManager, EmailService emailService)
+        public TicketController(HelpdeskContext context, UserManager<User> userManager, EmailService emailService, EmailCheckerService emailCheckerService)
         {
             _context = context;
             _userManager = userManager;
             _emailService = emailService;
+            _emailCheckerService = emailCheckerService;
         }
-
+    
         public async Task<IActionResult> Index(string searchString, string status, int? page)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 10; // Set your desired page size
+            var pageSize = 10; 
 
             var ticketsQuery = _context.Tickets.AsQueryable();
 
@@ -122,7 +125,6 @@ namespace Enviroment.Controllers
             {
                 return NotFound();
             }
-
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
             {
@@ -130,6 +132,7 @@ namespace Enviroment.Controllers
             }
             return View(ticket);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
@@ -154,7 +157,7 @@ namespace Enviroment.Controllers
                 ticket.LastUpdated = DateTime.Now;
 
                 // Send an email with the note content only if the user is an admin
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole("Admin") && !string.IsNullOrEmpty(ticket.EmailAddress))
                 {
                     await _emailService.SendEmailAsync(ticket.EmailAddress, "New Note Added to Your Ticket", ticket.NewNote);
                 }
@@ -172,6 +175,7 @@ namespace Enviroment.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(ticket);
         }
         public async Task<IActionResult> KPIs()
@@ -227,6 +231,11 @@ namespace Enviroment.Controllers
                 _context.Tickets.Remove(ticket);
                 await _context.SaveChangesAsync();
             }
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> CheckEmails()
+        {
+            await _emailCheckerService.CheckAndCreateTicketsFromEmailAsync();
             return RedirectToAction(nameof(Index));
         }
     }

@@ -1,11 +1,12 @@
 using Enviroment.Data;
-using Enviroment.Models; 
+using Enviroment.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using Enviroment.Services; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +23,12 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<HelpdeskContext>();
 
-// Configure EmailService
+// Configure EmailService and related services
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddTransient<EmailService>();
+builder.Services.AddScoped<EmailService>(); // Register EmailService for dependency injection
+builder.Services.AddScoped<EmailCheckerService>(); // Register EmailCheckerService
+builder.Services.AddHostedService<EmailBackgroundService>(); // Register EmailBackgroundService
+
 
 var app = builder.Build();
 
@@ -54,7 +58,7 @@ app.Run();
 
 async Task SeedRoles(IServiceProvider serviceProvider)
 {
-    // Seed roles if they don't exist
+  
     using var scope = serviceProvider.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -117,39 +121,41 @@ async Task SeedUserAsync(UserManager<User> userManager, string email, string pas
         }
     }
 }
-
 public class EmailService
 {
     private readonly EmailSettings _emailSettings;
 
     public EmailService(IOptions<EmailSettings> emailSettings)
     {
+        // User already exists - you might want to check if the email is confirmed or perform other updates
         _emailSettings = emailSettings.Value;
     }
 
-    public async Task SendEmailAsync(string email, string subject, string message)
-    {
-        var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
-        emailMessage.To.Add(new MailboxAddress("", email));
-        emailMessage.Subject = subject;
-        emailMessage.Body = new TextPart("plain") { Text = message };
+public async Task SendEmailAsync(string email, string subject, string message)
+{
+    var emailMessage = new MimeMessage();
+    emailMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
+    emailMessage.To.Add(new MailboxAddress("", email));
+    emailMessage.Subject = subject;
+    emailMessage.Body = new TextPart("plain") { Text = message };
 
-        using (var client = new SmtpClient())
-        {
-            await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.MailPort, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.Password);
-            await client.SendAsync(emailMessage);
-            await client.DisconnectAsync(true);
-        }
+    using (var client = new SmtpClient())
+    {
+        await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.MailPort, MailKit.Security.SecureSocketOptions.StartTls);
+        await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.Password);
+        await client.SendAsync(emailMessage);
+        await client.DisconnectAsync(true);
     }
 }
-
+}
 public class EmailSettings
 {
     public string MailServer { get; set; }
     public int MailPort { get; set; }
+    public string Email { get; set; }
     public string SenderName { get; set; }
     public string SenderEmail { get; set; }
     public string Password { get; set; }
+    public string ImapServer { get; set; }
+    public int ImapPort { get; set; }
 }

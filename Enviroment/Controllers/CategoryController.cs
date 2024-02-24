@@ -1,6 +1,6 @@
 ﻿using Enviroment.Data;
 using Enviroment.Models;
-using Enviroment.ViewModels; // Make sure to include this namespace for your ViewModel
+using Enviroment.ViewModels; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

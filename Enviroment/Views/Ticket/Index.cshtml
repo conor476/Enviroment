@@ -21,9 +21,9 @@
         .side-pane {
             position: absolute;
             left: 0;
-            top: 80px; /* Adjust based on the navbar's actual height */
+            top: 80px; 
             width: 280px;
-            height: calc(100% - 80px); /* Adjust based on the navbar's actual height */
+            height: calc(100% - 80px); 
             background-color: rgba(9, 162, 255, 0.85);
             padding: 0px;
             box-sizing: border-box;
@@ -35,11 +35,11 @@
             }
 
         .content-area {
-            margin-left: 280px; /* Same as the width of the side-pane */
-            padding-top: 60px; /* Adjust based on the navbar's actual height */
-            padding-left: 0px; /* Optional: for some spacing from the side-pane */
-            padding-right: 0px; /* Optional: for some spacing from the right edge */
-            width: calc(100% - 280px); /* Adjust width to account for side-pane */
+            margin-left: 280px; 
+            padding-top: 60px; 
+            padding-left: 0px; 
+            padding-right: 0px; 
+            width: calc(100% - 280px); 
         }
 
         h2 {
@@ -135,6 +135,12 @@
                 <p>
                     <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search Tickets" />
                     <input type="submit" value="Search" class="btn btn-default" />
+                    <!-- In Index.cshtml -->
+                    <form asp-action="CheckEmails" asp-controller="Ticket" method="post">
+                        <button type="submit" class="btn btn-primary">Check Emails</button>
+                    </form>
+                    <!-- Rest of your index view content -->
+
                 </p>
                 <div>
                     <p>
@@ -153,6 +159,7 @@
                             <input type="checkbox" name="status" value="Suspended" @(ViewBag.CurrentStatus == "Suspended" ? "checked" : "")>
                             <label for="statusSuspended">Suspended</label><br>
                         </div>
+
                     </p>
                 </div>
 
