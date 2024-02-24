@@ -121,41 +121,15 @@ async Task SeedUserAsync(UserManager<User> userManager, string email, string pas
         }
     }
 }
-public class EmailService
-{
-    private readonly EmailSettings _emailSettings;
 
-    public EmailService(IOptions<EmailSettings> emailSettings)
-    {
-        // User already exists - you might want to check if the email is confirmed or perform other updates
-        _emailSettings = emailSettings.Value;
-    }
-
-public async Task SendEmailAsync(string email, string subject, string message)
-{
-    var emailMessage = new MimeMessage();
-    emailMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
-    emailMessage.To.Add(new MailboxAddress("", email));
-    emailMessage.Subject = subject;
-    emailMessage.Body = new TextPart("plain") { Text = message };
-
-    using (var client = new SmtpClient())
-    {
-        await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.MailPort, MailKit.Security.SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.Password);
-        await client.SendAsync(emailMessage);
-        await client.DisconnectAsync(true);
-    }
-}
-}
 public class EmailSettings
 {
-    public string MailServer { get; set; }
-    public int MailPort { get; set; }
-    public string Email { get; set; }
-    public string SenderName { get; set; }
-    public string SenderEmail { get; set; }
-    public string Password { get; set; }
-    public string ImapServer { get; set; }
+    public string? SmtpServer { get; set; }
+    public int SmtpPort { get; set; }
+    public string? Email { get; set; }
+    public string? SenderName { get; set; }
+    public string? SenderEmail { get; set; }
+    public string? Password { get; set; }
+    public string? ImapServer { get; set; }
     public int ImapPort { get; set; }
 }

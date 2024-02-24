@@ -7,9 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bin\Debug\net8.0\**" />
     <Compile Remove="Views\Tickets\**" />
+    <Content Remove="bin\Debug\net8.0\**" />
     <Content Remove="Views\Tickets\**" />
+    <EmbeddedResource Remove="bin\Debug\net8.0\**" />
     <EmbeddedResource Remove="Views\Tickets\**" />
+    <None Remove="bin\Debug\net8.0\**" />
     <None Remove="Views\Tickets\**" />
   </ItemGroup>
 
