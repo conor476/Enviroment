@@ -129,8 +129,18 @@ namespace Enviroment.Controllers
             {
                 return NotFound();
             }
+
+            // Load categories from the database for the dropdown
+            var categories = await _context.Categorys
+                                           .Select(c => new { c.Case_Name, c.Description })
+                                           .ToListAsync();
+
+            ViewBag.Categories = new SelectList(categories, "Case_Name", "Case_Name");
+            ViewBag.CategoryDescriptions = categories.ToDictionary(c => c.Case_Name, c => c.Description);
+
             return View(ticket);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
@@ -173,8 +183,17 @@ namespace Enviroment.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Re-populate categories for the dropdown in case of a validation error
+            var categories = await _context.Categorys
+                                           .Select(c => new { c.Case_Name, c.Description })
+                                           .ToListAsync();
+            ViewBag.Categories = new SelectList(categories, "Case_Name", "Case_Name");
+            ViewBag.CategoryDescriptions = categories.ToDictionary(c => c.Case_Name, c => c.Description);
+
             return View(ticket);
         }
+
         public async Task<IActionResult> KPIs()
         {
             var categories = _context.Categorys.ToList();
