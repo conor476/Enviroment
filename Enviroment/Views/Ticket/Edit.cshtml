@@ -111,14 +111,21 @@
 
 @section Scripts {
     <script>
-        // Script to handle category selection change
-        var categoryDescriptions = @Html.Raw(Json.Serialize(ViewBag.CategoryDescriptions));
-
-        document.getElementById('categoryDropdown').addEventListener('change', function () {
-            var selectedCategory = this.value;
+        // Function to update the description based on the selected category
+        function updateDescription() {
+            var categoryDescriptions = @Html.Raw(Json.Serialize(ViewBag.CategoryDescriptions));
+            var selectedCategory = document.getElementById('categoryDropdown').value;
             var description = categoryDescriptions[selectedCategory];
+
+            // Update the description text area
             document.getElementById('descriptionTextarea').value = description || '';
-        });
+        }
+
+        // Attach the updateDescription function to the category dropdown's change event
+        document.getElementById('categoryDropdown').addEventListener('change', updateDescription);
+
+        // Call updateDescription on page load to set the initial state
+        document.addEventListener('DOMContentLoaded', updateDescription);
     </script>
     <script>
         function showNoteArea() {

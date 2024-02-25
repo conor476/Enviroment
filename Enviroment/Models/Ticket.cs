@@ -15,6 +15,7 @@
         public DateTime? OpenedDate { get; set; }
         public DateTime? ClosedDate { get; set; }
         public DateTime? LastUpdated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public string? NewNote { get; set; }

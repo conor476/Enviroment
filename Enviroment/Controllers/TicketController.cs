@@ -82,40 +82,45 @@ namespace Enviroment.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type,EmailAddress,CustomerName")] Ticket ticket)
+   [HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type,EmailAddress,CustomerName")] Ticket ticket)
+{
+    if (User.IsInRole("Admin"))
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == ticket.EmailAddress);
+        if (user != null)
         {
-            if (User.IsInRole("Admin"))
-            {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == ticket.EmailAddress);
-                if (user != null)
-                {
-                    ticket.CustomerName = user.Id;
-                }
-            }
-            else
-            {
-                ticket.CustomerName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                ticket.EmailAddress = User.Identity.Name;
-            }
-
-            if (ModelState.IsValid)
-            {
-                ticket.OpenedDate = DateTime.Now; // Set OpenedDate when creating the ticket
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Edit", new { id = ticket.TicketID });
-            }
-
-            var categories = await _context.Categorys
-                                           .Select(c => new { c.Case_Name, c.Description })
-                                           .ToListAsync();
-            ViewBag.Categories = new SelectList(categories, "Case_Name", "Case_Name");
-            ViewBag.CategoryDescriptions = categories.ToDictionary(c => c.Case_Name, c => c.Description);
-
-            return View(ticket);
+            ticket.CustomerName = user.Id;
         }
+    }
+    else
+    {
+        ticket.CustomerName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        ticket.EmailAddress = User.Identity.Name;
+    }
+
+    if (ModelState.IsValid)
+    {
+        ticket.DateCreated = DateTime.Now; // Record the date and time when the ticket is created
+        ticket.Status = "New"; // Set the initial status to "New"
+
+        _context.Add(ticket);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Edit", new { id = ticket.TicketID });
+    }
+
+    var categories = await _context.Categorys
+                                   .Select(c => new { c.Case_Name, c.Description })
+                                   .ToListAsync();
+    ViewBag.Categories = new SelectList(categories, "Case_Name", "Case_Name");
+    ViewBag.CategoryDescriptions = categories.ToDictionary(c => c.Case_Name, c => c.Description);
+
+    return View(ticket);
+}
+
+
+
 
         public async Task<IActionResult> Edit(int? id)
         {
@@ -145,12 +150,7 @@ namespace Enviroment.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
         {
-            if (id != ticket.TicketID)
-            {
-                return NotFound();
-            }
-
-            var existingTicket = await _context.Tickets.AsNoTracking().FirstOrDefaultAsync(t => t.TicketID == id);
+            var existingTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketID == id);
             if (existingTicket == null)
             {
                 return NotFound();
@@ -159,13 +159,10 @@ namespace Enviroment.Controllers
             if (!string.IsNullOrEmpty(ticket.NewNote))
             {
                 string userName = User.Identity.Name;
-                ticket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
+                existingTicket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
+                existingTicket.LastUpdated = DateTime.Now;
 
-                // Update the LastUpdated property
-                ticket.LastUpdated = DateTime.Now;
-
-                // Send an email with the note content only if the user is an admin
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole("Admin") && !string.IsNullOrEmpty(ticket.EmailAddress))
                 {
                     await _emailService.SendEmailAsync(ticket.EmailAddress, "New Note Added to Your Ticket", ticket.NewNote);
                 }
@@ -173,18 +170,31 @@ namespace Enviroment.Controllers
 
             if (ModelState.IsValid)
             {
-                // Check if the status is changing to "Closed"
-                if (existingTicket.Status != "Closed" && ticket.Status == "Closed")
+                if (existingTicket.Status != "Open" && ticket.Status == "Open" && existingTicket.OpenedDate == null)
                 {
-                    ticket.ClosedDate = DateTime.Now; // Set the ClosedDate when status changes to Closed
+                    existingTicket.OpenedDate = DateTime.Now;
                 }
 
-                _context.Update(ticket);
+                if (existingTicket.Status != "Closed" && ticket.Status == "Closed")
+                {
+                    existingTicket.ClosedDate = DateTime.Now;
+                }
+
+                existingTicket.Status = ticket.Status;
+                existingTicket.Category = ticket.Category;
+                existingTicket.Team = ticket.Team;
+                existingTicket.Summary = ticket.Summary;
+                existingTicket.Type = ticket.Type;
+                existingTicket.CustomerName = ticket.CustomerName;
+                existingTicket.EmployeeName = ticket.EmployeeName;
+                existingTicket.EmailAddress = ticket.EmailAddress;
+
+                _context.Update(existingTicket);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 
-            // Re-populate categories for the dropdown in case of a validation error
             var categories = await _context.Categorys
                                            .Select(c => new { c.Case_Name, c.Description })
                                            .ToListAsync();
@@ -193,6 +203,8 @@ namespace Enviroment.Controllers
 
             return View(ticket);
         }
+
+
 
         public async Task<IActionResult> KPIs()
         {
