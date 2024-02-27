@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Enviroment.styles.css" asp-append-version="true" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Home - Brand</title>
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
+        <link rel="stylesheet" href="assets/css/baguetteBox.min.css">
+        <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
+   
+
     <style>
         body, html {
             height: 100%;
@@ -29,15 +38,26 @@
             flex-grow: 1;
         }
 
+        .custom-navbar {
+            height: 80px;
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            line-height: 60px; /* Align vertically within the navbar */
+        }
+
         .mt-auto {
             margin-top: auto;
+        }
+
+    
         }
     </style>
 </head>
 <body>
     <div class="d-flex flex-column min-vh-100"> <!-- Flex container -->
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="width: 100%;">
+            <nav class="navbar custom-navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="width: 100%;">
                 <div class="container-fluid">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Helpdesk</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"

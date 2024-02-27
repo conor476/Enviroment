@@ -56,7 +56,7 @@ namespace Enviroment.Services
                 EmailAddress = message.From.Mailboxes.FirstOrDefault()?.Address ?? "Unknown",
                 Description = message.TextBody ?? "No content",
                 Summary = message.Subject ?? "No subject",
-                Status = "Open", // Assuming a default status
+                Status = "New", // Assuming a default status
                 OpenedDate = DateTime.Now,
                 LastUpdated = DateTime.Now,
                 Category = "General", // Default category, change as needed
