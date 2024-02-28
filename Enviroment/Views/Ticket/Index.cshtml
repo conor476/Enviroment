@@ -131,6 +131,7 @@
             color: D1C8E1;
             cursor: pointer;
         }
+
     </style>
 </head>
 <body>
@@ -141,40 +142,81 @@
                 <p>
                     <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search Tickets" />
                     <input type="submit" value="Search" class="btn btn-default" />
-                    <!-- In Index.cshtml -->
-                    <form asp-action="CheckEmails" asp-controller="Ticket" method="post">
-                        <button type="submit" class="btn btn-primary">Check Emails</button>
-                    </form>
-                    <!-- Rest of your index view content -->
-
                 </p>
-                <div>
-                    <p>
-                        <div class="checkbox-container">
-                        Status:
-                        </div>
-                        <div class="checkbox-container">
-                            <input type="checkbox" name="status" value="Open" @(ViewBag.CurrentStatus == "Open" ? "checked" : "")>
-                            <label for="statusOpen">Open</label><br>
-                        </div>
-                        <div class="checkbox-container">
-                            <input type="checkbox" name="status" value="Closed" @(ViewBag.CurrentStatus == "Closed" ? "checked" : "")>
-                            <label for="statusClosed">Closed</label><br>
-                        </div>
-                        <div class="checkbox-container">
-                            <input type="checkbox" name="status" value="Suspended" @(ViewBag.CurrentStatus == "Suspended" ? "checked" : "")>
-                            <label for="statusSuspended">Suspended</label><br>
-                        </div>
 
-                    </p>
+                <!-- Ticket Type Filter -->
+                <div class="filter-group">
+               
+                    <div class="filter-options">
+                        <p>Type Filter:</p>
+                        <div class="option">
+                            <input type="radio" id="incident" name="typeFilter" value="Incident" @(ViewBag.TypeFilter == "Incident" ? "checked" : "")>
+                            <label for="incident">Incident</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="serviceRequest" name="typeFilter" value="Service Request" @(ViewBag.TypeFilter == "Service Request" ? "checked" : "")>
+                            <label for="serviceRequest">Service Request</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="allTypes" name="typeFilter" value="" @(string.IsNullOrEmpty(ViewBag.TypeFilter) ? "checked" : "")>
+                            <label for="allTypes">All</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Filters -->
+                <div class="filter-group">
+                    <div class="filter-options">
+                        <p>Status Filter:</p>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="newStatus" name="isNewChecked" @(ViewBag.IsNewChecked ? "checked" : "")>
+                            <label for="newStatus">New</label><br>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="statusOpen" name="status" value="Open" @(ViewBag.CurrentStatus == "Open" ? "checked" : "")>
+                            <label for="statusOpen">Open</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="statusClosed" name="status" value="Closed" @(ViewBag.CurrentStatus == "Closed" ? "checked" : "")>
+                            <label for="statusClosed">Closed</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="statusSuspended" name="status" value="Suspended" @(ViewBag.CurrentStatus == "Suspended" ? "checked" : "")>
+                            <label for="statusSuspended">Suspended</label>
+                        </div>
+                 
+                    </div>
                 </div>
 
                 <style>
-                    .checkbox-container {
-                        text-align: left;
+                    .filter-group {
+                        margin-bottom: 15px;
+                    }
+
+                    .filter-options {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+
+                    .option {
+                        margin-bottom: 5px;
                     }
                 </style>
 
+
+             
+
+                <!-- Sort Order Button -->
+                <p>
+                    <input type="hidden" name="sortDescending" value="@(ViewBag.SortDescending ? "false" : "true")">
+                    <button type="submit" class="btn btn-default">@((ViewBag.SortDescending) ? "Sort Ascending" : "Sort Descending")</button>
+                </p>
+
+                <!-- Existing Check Emails button... -->
+                <form asp-action="CheckEmails" asp-controller="Ticket" method="post">
+                    <button type="submit" class="btn btn-primary">Check Emails</button>
+                </form>
             </div>
         </form>
 
@@ -229,11 +271,8 @@
                         </td>
                     </tr>
                 }
-    
-        </tbody>
-       
-      
-    </table>
+            </tbody>
+        </table>
     <div style="height: 50px;"></div>
  
 </body>

@@ -22,7 +22,7 @@ namespace Enviroment.Controllers
             _emailService = emailService;
         }
 
-        public async Task<IActionResult> Index(string searchString, string status, int? page)
+        public async Task<IActionResult> Index(string searchString, string status, int? page, bool sortDescending = false, string typeFilter = null, bool isNewChecked = false)
         {
             var pageNumber = page ?? 1;
             var pageSize = 10;
@@ -49,15 +49,32 @@ namespace Enviroment.Controllers
                 ticketsQuery = ticketsQuery.Where(t => t.Status == status);
             }
 
-            // Sorting tickets by LastUpdated in descending order
-            var pagedTickets = await ticketsQuery.OrderBy(t => t.LastUpdated)
-                                                 .ToPagedListAsync(pageNumber, pageSize);
+            // Filtering by Type (Service Request or Incident)
+            if (!string.IsNullOrEmpty(typeFilter))
+            {
+                ticketsQuery = ticketsQuery.Where(t => t.Type == typeFilter);
+            }
+
+            // Filtering by New Status
+            if (isNewChecked)
+            {
+                ticketsQuery = ticketsQuery.Where(t => t.Status == "New");
+            }
+
+            // Sorting tickets by LastUpdated
+            ticketsQuery = sortDescending ? ticketsQuery.OrderByDescending(t => t.LastUpdated) : ticketsQuery.OrderBy(t => t.LastUpdated);
+
+            var pagedTickets = await ticketsQuery.ToPagedListAsync(pageNumber, pageSize);
 
             ViewBag.CurrentFilter = searchString;
             ViewBag.CurrentStatus = status; // Persist the current status in the view
+            ViewBag.SortDescending = sortDescending; // Persist the current sort order
+            ViewBag.TypeFilter = typeFilter; // Persist the current type filter
+            ViewBag.IsNewChecked = isNewChecked; // Persist the checkbox status
 
             return View(pagedTickets);
         }
+
 
         public async Task<IActionResult> OpenTickets(int? page)
         {
