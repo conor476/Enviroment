@@ -1,65 +1,79 @@
-﻿@model List<CategoryKPI1>
+﻿@model List<CategoryKPI>
 
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Home - Brand</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPI Dashboard</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
     <link rel="stylesheet" href="assets/css/baguetteBox.min.css">
     <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
-</head>
-
-<style>
-    body {
-        font-family: Montserrat;
-        margin: 0;
-        padding: 0;
-        background-color: #WHITE;
-    }
-</style>
-<html>
-<head>
-    <title>KPI Dashboard</title>
     <style>
         body {
-            font-family: Montserrat;
-            background-color: whitesmoke;
-            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
         }
-        table {
+
+        .kpi-table {
             margin: 0 auto;
+            margin-top: 20px;
             border-collapse: collapse;
-            width: 60%;
+            width: 80%;
             background-color: white;
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:hover {background-color: #f5f5f5;}
+
+            .kpi-table th, .kpi-table td {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .kpi-table th {
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            .kpi-table tr:hover {
+                background-color: #f5f5f5;
+            }
     </style>
 </head>
 <body>
-    <h2>KPI Dashboard</h2>
-    <table>
-        <tr>
-            <th>Category</th>
-            <th>Average Solve Time (Hours)</th>
-        </tr>
-        @foreach (var kpi in Model)
-        {
-            <tr>
-                <td>@kpi.CategoryName</td>
-                <td>@string.Format("{0:F2}", kpi.AverageSolveTime)</td>
-            </tr>
-        }
-    </table>
+    <div class="container mt-4">
+        <h2 class="text-center">KPI Dashboard</h2>
+        <table class="kpi-table table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Average First Response Time (Minutes)</th>
+                    <th>Closed Tickets</th>
+                    <th>Open Tickets</th>
+                    <th>Incidents/Service Requests</th>
+                    <th>Average Solve Time (Hours)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var kpi in Model)
+                {
+                    <tr>
+                        <td>@kpi.CategoryName</td>
+                        <td>@string.Format("{0:F2}", kpi.AverageFirstResponseTime)</td>
+                        <td>@kpi.TicketVolume</td>
+                        <td>@kpi.TicketBacklog</td>
+                        <td>Incidents: @kpi.IncidentCount, Service Requests: @kpi.ServiceRequestCount</td>
+                        <td>@string.Format("{0:F2}", kpi.AverageSolveTime)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/baguetteBox.min.js"></script>
+    <script src="assets/js/vanilla-zoom.min.js"></script>
 </body>
 </html>

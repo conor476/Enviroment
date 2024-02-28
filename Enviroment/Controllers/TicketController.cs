@@ -208,31 +208,50 @@ public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category
 
         public async Task<IActionResult> KPIs()
         {
-            var categories = _context.Categorys.ToList();
-            var kpiData = new List<CategoryKPI1>();
+            var categories = await _context.Categorys.ToListAsync();
+            var kpiData = new List<CategoryKPI>();
 
             foreach (var category in categories)
             {
-                var tickets = _context.Tickets
-                                      .Where(t => t.Category == category.Case_Name &&
-                                                  t.OpenedDate != null &&
-                                                  t.ClosedDate != null)
-                                      .ToList();
+                var tickets = await _context.Tickets
+                                            .Where(t => t.Category == category.Case_Name)
+                                            .ToListAsync();
 
-                if (tickets.Any())
+                // Calculate Average Solve Time KPI
+                var solveTimes = tickets.Where(t => t.OpenedDate != null && t.ClosedDate != null)
+                                        .Select(t => (t.ClosedDate.Value - t.OpenedDate.Value).TotalHours);
+                var averageSolveTime = solveTimes.Any() ? solveTimes.Average() : (double?)null;
+
+                // Calculate First Response Time KPI
+                var firstResponseTimes = tickets
+                    .Where(t => t.DateCreated != null && t.OpenedDate != null)
+                    .Select(t => (t.OpenedDate.Value - t.DateCreated.Value).TotalMinutes);
+
+                var averageFirstResponseTime = firstResponseTimes.Any() ? firstResponseTimes.Average() : 0;
+                // Calculate Ticket Volume KPI
+                var ticketVolume = tickets.Count;
+
+                // Calculate Ticket Backlog KPI
+                var backlogTickets = tickets.Count(t => t.ClosedDate == null);
+
+                // Calculate Incident vs Service Request KPI
+                var incidentCount = tickets.Count(t => t.Type == "Incident");
+                var serviceRequestCount = tickets.Count(t => t.Type == "Service Request");
+
+                kpiData.Add(new CategoryKPI
                 {
-                    var averageSolveTime = tickets.Average(t => (t.ClosedDate - t.OpenedDate).Value.TotalHours);
-                    kpiData.Add(new CategoryKPI1
-                    {
-                        CategoryName = category.Case_Name,
-                        AverageSolveTime = averageSolveTime
-                    });
-                }
+                    CategoryName = category.Case_Name,
+                    AverageSolveTime = averageSolveTime,
+                    AverageFirstResponseTime = averageFirstResponseTime,
+                    TicketVolume = ticketVolume,
+                    TicketBacklog = backlogTickets,
+                    IncidentCount = incidentCount,                
+                    ServiceRequestCount = serviceRequestCount
+                });
             }
 
             return View(kpiData);
         }
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
