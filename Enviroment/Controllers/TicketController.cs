@@ -101,7 +101,7 @@ namespace Enviroment.Controllers
 
    [HttpPost]
 [ValidateAntiForgeryToken]
-public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type,EmailAddress,CustomerName")] Ticket ticket)
+public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type,EmailAddress,CustomerName, PriorityLevel")] Ticket ticket)
 {
     if (User.IsInRole("Admin"))
     {
@@ -121,8 +121,8 @@ public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category
     {
         ticket.DateCreated = DateTime.Now; // Record the date and time when the ticket is created
         ticket.Status = "New"; // Set the initial status to "New"
-
-        _context.Add(ticket);
+        ticket.PriorityLevel = ticket.PriorityLevel;
+                _context.Add(ticket);
         await _context.SaveChangesAsync();
         return RedirectToAction("Edit", new { id = ticket.TicketID });
     }
@@ -165,7 +165,7 @@ public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,Team,Summary,Type,NewNote")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status, PriorityLevel, Team,Summary,Type,NewNote")] Ticket ticket)
         {
             var existingTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketID == id);
             if (existingTicket == null)
@@ -205,7 +205,7 @@ public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category
                 existingTicket.CustomerName = ticket.CustomerName;
                 existingTicket.EmployeeName = ticket.EmployeeName;
                 existingTicket.EmailAddress = ticket.EmailAddress;
-
+                existingTicket.PriorityLevel = ticket.PriorityLevel;
                 _context.Update(existingTicket);
                 await _context.SaveChangesAsync();
 

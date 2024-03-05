@@ -89,7 +89,9 @@ namespace Enviroment.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
-
+            [Required]
+            [Display(Name = "Role")]
+            public string SelectedRole { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -114,7 +116,7 @@ namespace Enviroment.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
+             
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -122,6 +124,21 @@ namespace Enviroment.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Assign the user to the selected role from the dropdown
+                    if (!string.IsNullOrWhiteSpace(Input.SelectedRole))
+                    {
+                        var addToRoleResult = await _userManager.AddToRoleAsync(user, Input.SelectedRole);
+                        if (!addToRoleResult.Succeeded)
+                        {
+                            // Handle any errors that occurred during adding the user to the role
+                            foreach (var error in addToRoleResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return Page();
+                        }
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -145,6 +162,7 @@ namespace Enviroment.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -154,7 +172,6 @@ namespace Enviroment.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
-
         private User CreateUser()
         {
             try

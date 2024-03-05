@@ -87,7 +87,10 @@
             width: 99%;
             margin: 20px auto;
             border-collapse: collapse;
-
+            max-width: 150px; /* Adjust as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .table th, .table td {
@@ -248,6 +251,7 @@
                     <th>Type</th>
                     <th>Category</th>
                     <th>Status</th>
+                    <th>Priority</th>
                     <th>Team</th>
                     <th>Actions</th>
                 </tr>
@@ -264,6 +268,7 @@
                         <td>@ticket.Type</td>
                         <td>@ticket.Category</td>
                         <td style="@GetBackgroundColor(ticket.Status)">@ticket.Status</td>
+                        <td>@ticket.PriorityLevel</td>
                         <td>@ticket.Team</td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@ticket.TicketID" class="btn btn-warning btn-fixed-width">Edit</a>

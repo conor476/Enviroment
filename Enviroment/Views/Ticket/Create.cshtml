@@ -92,6 +92,19 @@
         </select>
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
+            <!-- PriorityLevel Dropdown -->
+            <div class="form-group">
+                <label asp-for="PriorityLevel">Priority Level</label>
+                <select asp-for="PriorityLevel" class="form-control" required>
+                    <option value="">Select a Priority Level</option>
+                    <option value="1">1 - Lowest</option>
+                    <option value="2">2</option>
+                    <option value="3">3 - Medium</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Highest</option>
+                </select>
+                <span asp-validation-for="PriorityLevel" class="text-danger"></span>
+            </div>
 
     <!-- Team Dropdown -->
     <div class="form-group">
