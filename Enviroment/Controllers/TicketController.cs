@@ -101,25 +101,22 @@ namespace Enviroment.Controllers
 
    [HttpPost]
 [ValidateAntiForgeryToken]
-public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type,EmailAddress,CustomerName, PriorityLevel")] Ticket ticket)
-{
-    if (User.IsInRole("Admin"))
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == ticket.EmailAddress);
-        if (user != null)
+        public async Task<IActionResult> Create([Bind("EmployeeName,Description,Category,Status,Team,Summary,Type,EmailAddress,CustomerName, PriorityLevel")] Ticket ticket)
         {
-            ticket.CustomerName = user.Id;
-        }
-    }
-    else
-    {
-        ticket.CustomerName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        ticket.EmailAddress = User.Identity.Name;
-    }
+            if (User.IsInRole("Admin"))
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == ticket.EmailAddress);
+             
+            }
+            else
+            {
+               
+                ticket.EmailAddress = User.Identity.Name;
+            }
 
-    if (ModelState.IsValid)
-    {
-        ticket.DateCreated = DateTime.Now; // Record the date and time when the ticket is created
+            if (ModelState.IsValid)
+            {
+                ticket.DateCreated = DateTime.Now; // Record the date and time when the ticket is created
         ticket.Status = "New"; // Set the initial status to "New"
         ticket.PriorityLevel = ticket.PriorityLevel;
                 _context.Add(ticket);

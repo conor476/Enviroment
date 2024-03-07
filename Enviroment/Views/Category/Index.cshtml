@@ -13,17 +13,20 @@
     <div class="row">
        
         <div class="col-md-2">
-            <a href="@Url.Action("Create", "Category")" class="btn btn-primary">Create New Case Type</a>
-            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="@Url.Action("Create", "Category")" class="btn btn-primary">Create New Case Type</a>
+            }
 
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 @for (int i = 0; i < Model.Count; i++)
                 {
-                    var groupId = "group-" + i; 
+                    var groupId = "group-" + i;
                     <a class="nav-link" id="@groupId-tab" data-toggle="pill" href="#@groupId" role="tab" aria-controls="@groupId" aria-selected="false">@Model[i].GroupName</a>
-
                 }
             </div>
         </div>
+
 
 
         <div class="col-md-10">
