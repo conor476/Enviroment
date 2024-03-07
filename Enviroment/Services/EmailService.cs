@@ -20,10 +20,10 @@ namespace Enviroment.Services
             _context = context;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string message, int ticketId, string ticketType)
         {
-        
-          
+            // Modify the subject line to include ticket ID and type
+            string modifiedSubject = $"[Ticket ID: {ticketId}, Type: {ticketType}] {subject}";
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.Email));
             emailMessage.To.Add(new MailboxAddress("", email));

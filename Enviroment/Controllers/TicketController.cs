@@ -181,11 +181,18 @@ namespace Enviroment.Controllers
                 existingTicket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
                 existingTicket.LastUpdated = DateTime.Now; // Update the LastUpdated field.
 
-                // If the user is an Admin and an email address is provided, send an email notification.
+               
+
+                // Check if the user is an Admin and an email address is provided, then send an email notification
                 if (User.IsInRole("Admin") && !string.IsNullOrEmpty(ticket.EmailAddress))
                 {
-                    await _emailService.SendEmailAsync(ticket.EmailAddress, "New Note Added to Your Ticket", ticket.NewNote);
+                    // Construct the subject line with ticket type and ticket number
+                    string emailSubject = $"New Note Added to Your Ticket - {existingTicket.Type} #{existingTicket.TicketID}";
+
+                    // Send the email with the customized subject line
+                    await _emailService.SendEmailAsync(ticket.EmailAddress, emailSubject, ticket.NewNote, existingTicket.TicketID, existingTicket.Type);
                 }
+
             }
 
             // Validate the model. If valid, proceed to update the ticket.
