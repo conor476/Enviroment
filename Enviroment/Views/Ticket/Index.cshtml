@@ -229,12 +229,13 @@
         <!-- Pagination Controls -->
         @if (Model.PageNumber > 1)
         {
-            <a href="@Url.Action("Index", new { page = Model.PageNumber - 1, searchString = ViewBag.CurrentFilter, status = ViewBag.CurrentStatus })" class="btn btn-default">Load Previous Ten Results</a>
+            <a href="@Url.Action("Index", new { page = Model.PageNumber - 1, searchString = ViewBag.CurrentFilter, status = ViewBag.CurrentStatus, sortDescending = ViewBag.SortDescending, typeFilter = ViewBag.TypeFilter, isNewChecked = ViewBag.IsNewChecked })" class="btn btn-default">Load Previous Ten Results</a>
         }
         @if (Model.PageNumber < Model.PageCount)
         {
-            <a href="@Url.Action("Index", new { page = Model.PageNumber + 1, searchString = ViewBag.CurrentFilter, status = ViewBag.CurrentStatus })" class="btn btn-default">Load Next Ten Results</a>
+            <a href="@Url.Action("Index", new { page = Model.PageNumber + 1, searchString = ViewBag.CurrentFilter, status = ViewBag.CurrentStatus, sortDescending = ViewBag.SortDescending, typeFilter = ViewBag.TypeFilter, isNewChecked = ViewBag.IsNewChecked })" class="btn btn-default">Load Next Ten Results</a>
         }
+
     </div>
 
     <div class="content-area">

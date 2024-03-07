@@ -62,15 +62,16 @@ namespace Enviroment.Controllers
             }
 
             // Sorting tickets by LastUpdated
-            ticketsQuery = sortDescending ? ticketsQuery.OrderByDescending(t => t.LastUpdated) : ticketsQuery.OrderBy(t => t.LastUpdated);
+          ticketsQuery = sortDescending ? ticketsQuery.OrderByDescending(t => t.LastUpdated) : ticketsQuery.OrderBy(t => t.LastUpdated);
 
-            var pagedTickets = await ticketsQuery.ToPagedListAsync(pageNumber, pageSize);
+    var pagedTickets = await ticketsQuery.ToPagedListAsync(pageNumber, pageSize);
 
-            ViewBag.CurrentFilter = searchString;
-            ViewBag.CurrentStatus = status; // Persist the current status in the view
-            ViewBag.SortDescending = sortDescending; // Persist the current sort order
-            ViewBag.TypeFilter = typeFilter; // Persist the current type filter
-            ViewBag.IsNewChecked = isNewChecked; // Persist the checkbox status
+    // Storing the current filter parameters in the ViewBag to use them in the view
+    ViewBag.CurrentFilter = searchString;
+    ViewBag.CurrentStatus = status;
+    ViewBag.SortDescending = sortDescending;
+    ViewBag.TypeFilter = typeFilter;
+    ViewBag.IsNewChecked = isNewChecked;
 
             return View(pagedTickets);
         }
@@ -138,52 +139,59 @@ namespace Enviroment.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
+            // Check if the id parameter is null. If so, return a 404 Not Found response.
             if (id == null)
             {
                 return NotFound();
             }
 
+            // Find the ticket by id from the database. If not found, return a 404 Not Found response.
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
             {
                 return NotFound();
             }
 
-            // Load categories from the database for the dropdown
+            // Retrieve categories from the database to populate the dropdown list in the view.
             var categories = await _context.Categorys
                                            .Select(c => new { c.Case_Name, c.Description })
                                            .ToListAsync();
-
             ViewBag.Categories = new SelectList(categories, "Case_Name", "Case_Name");
             ViewBag.CategoryDescriptions = categories.ToDictionary(c => c.Case_Name, c => c.Description);
 
+            // Return the Edit view, passing in the ticket to be edited.
             return View(ticket);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status, PriorityLevel, Team,Summary,Type,NewNote")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("TicketID,CustomerName,EmployeeName,EmailAddress,Description,Category,Status,PriorityLevel,Team,Summary,Type,NewNote")] Ticket ticket)
         {
+            // Retrieve the existing ticket from the database. If not found, return a 404 Not Found response.
             var existingTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketID == id);
             if (existingTicket == null)
             {
                 return NotFound();
             }
 
+            // Check if a new note is added and if so, append it to the existing ticket description.
             if (!string.IsNullOrEmpty(ticket.NewNote))
             {
-                string userName = User.Identity.Name;
+                string userName = User.Identity.Name; // Get the current user's name.
                 existingTicket.Description += $"\n[Note added by {userName} on {DateTime.Now}]: {ticket.NewNote}";
-                existingTicket.LastUpdated = DateTime.Now;
+                existingTicket.LastUpdated = DateTime.Now; // Update the LastUpdated field.
 
+                // If the user is an Admin and an email address is provided, send an email notification.
                 if (User.IsInRole("Admin") && !string.IsNullOrEmpty(ticket.EmailAddress))
                 {
                     await _emailService.SendEmailAsync(ticket.EmailAddress, "New Note Added to Your Ticket", ticket.NewNote);
                 }
             }
 
+            // Validate the model. If valid, proceed to update the ticket.
             if (ModelState.IsValid)
             {
+                // Update the OpenedDate and ClosedDate based on the status changes.
                 if (existingTicket.Status != "Open" && ticket.Status == "Open" && existingTicket.OpenedDate == null)
                 {
                     existingTicket.OpenedDate = DateTime.Now;
@@ -194,6 +202,7 @@ namespace Enviroment.Controllers
                     existingTicket.ClosedDate = DateTime.Now;
                 }
 
+                // Update the ticket properties with the values from the form.
                 existingTicket.Status = ticket.Status;
                 existingTicket.Category = ticket.Category;
                 existingTicket.Team = ticket.Team;
@@ -203,12 +212,16 @@ namespace Enviroment.Controllers
                 existingTicket.EmployeeName = ticket.EmployeeName;
                 existingTicket.EmailAddress = ticket.EmailAddress;
                 existingTicket.PriorityLevel = ticket.PriorityLevel;
+
+                // Save the updated ticket to the database.
                 _context.Update(existingTicket);
                 await _context.SaveChangesAsync();
 
+                // Redirect to the Index action after successful update.
                 return RedirectToAction(nameof(Index));
             }
 
+            // If the model is not valid, reload the categories and return to the Edit view with the current ticket.
             var categories = await _context.Categorys
                                            .Select(c => new { c.Case_Name, c.Description })
                                            .ToListAsync();
