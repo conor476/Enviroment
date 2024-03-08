@@ -68,7 +68,8 @@
         }
 
         .btn-primary {
-            background-color: #007bff;
+            background-color: Lightgreen;
+            
         }
 
         .btn-info {
@@ -216,8 +217,12 @@
                     <button type="submit" class="btn btn-default">@((ViewBag.SortDescending) ? "Sort Ascending" : "Sort Descending")</button>
                 </p>
 
+                <div id="emailList">
+                    <!-- Emails will be inserted here -->
+                </div>
+
                 <!-- Existing Check Emails button... -->
-                <form asp-action="CheckEmails" asp-controller="Ticket" method="post">
+                <form onsubmit="event.preventDefault(); checkEmails();">
                     <button type="submit" class="btn btn-primary">Check Emails</button>
                 </form>
             </div>
@@ -282,6 +287,28 @@
     <div style="height: 50px;"></div>
  
 </body>
+<script>
+    // This function could be called when the "Check Emails" button is clicked or on a set interval
+    function checkEmails() {
+        $.ajax({
+            url: '@Url.Action("CheckEmails", "Ticket")',
+            type: 'POST',
+            success: function (data) {
+                // Assuming 'data' contains the new emails
+                // Update the page with the new emails
+                $('#emailList').html(data);
+            },
+            error: function (error) {
+                // Handle errors here
+                console.error("Error fetching emails:", error);
+            }
+        });
+    }
+
+    // Example of setting up a polling interval
+    // This will check for emails every 5 minutes
+    setInterval(checkEmails, 6000); // 300000 ms = 5 minutes
+</script>
 </html>
 
 @functions {
